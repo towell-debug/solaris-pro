@@ -1,0 +1,2521 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Connexion sécurisée à Solaris Pro"
+    >
+
+    <title>
+        Connexion | Solaris Pro
+    </title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        :root {
+
+            --primary: #16a34a;
+
+            --primary-dark: #15803d;
+
+            --secondary: #f59e0b;
+
+            --dark: #052e16;
+
+            --dark-soft: #14532d;
+
+            --text: #334155;
+
+            --text-light: #64748b;
+
+            --border: #dbe4f0;
+
+            --light: #f8fafc;
+
+            --success: #059669;
+
+            --danger: #dc2626;
+
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            color: var(--text);
+
+            background:
+                #f8fafc;
+
+        }
+
+
+        button,
+        input {
+            font: inherit;
+        }
+
+
+        button {
+            cursor: pointer;
+        }
+
+
+        a {
+            text-decoration: none;
+        }
+
+
+        /* =========================================
+           LAYOUT
+        ========================================= */
+
+        .auth-page {
+
+            min-height: 100vh;
+
+            display: grid;
+
+            grid-template-columns:
+                1.05fr
+                .95fr;
+
+        }
+
+
+        /* =========================================
+           PARTIE VISUELLE
+        ========================================= */
+
+        .auth-visual {
+
+            position: relative;
+
+            min-height: 100vh;
+
+            overflow: hidden;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            padding: 42px;
+
+            color: white;
+
+            background:
+
+                radial-gradient(
+                    circle at 18% 15%,
+                    rgba(56,189,248,.35),
+                    transparent 28%
+                ),
+
+                radial-gradient(
+                    circle at 85% 75%,
+                    rgba(37,99,235,.35),
+                    transparent 35%
+                ),
+
+                linear-gradient(
+                    145deg,
+                    #021a0e 0%,
+                    #082f68 55%,
+                    #0b5caa 100%
+                );
+
+        }
+
+
+        .auth-visual::before {
+
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background-image:
+                linear-gradient(
+                    rgba(255,255,255,.025) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,.025) 1px,
+                    transparent 1px
+                );
+
+            background-size:
+                45px 45px;
+
+            pointer-events: none;
+
+        }
+
+
+        .auth-brand {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            color: white;
+
+        }
+
+
+        .auth-brand-logo {
+
+            width: 52px;
+
+            height: 52px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 17px;
+
+            font-size: 21px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #38bdf8,
+                    #16a34a
+                );
+
+            box-shadow:
+                0 15px 35px
+                rgba(37,99,235,.32);
+
+        }
+
+
+        .auth-brand-text strong {
+
+            display: block;
+
+            font-size: 21px;
+
+            font-weight: 900;
+
+        }
+
+
+        .auth-brand-text span {
+
+            display: block;
+
+            margin-top: 3px;
+
+            color: #94a3b8;
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+
+        }
+
+
+        .auth-visual-content {
+
+            position: relative;
+
+            z-index: 2;
+
+            max-width: 600px;
+
+            margin: auto 0;
+
+        }
+
+
+        .auth-eyebrow {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 15px;
+
+            padding: 7px 11px;
+
+            border-radius: 999px;
+
+            color: #bbf7d0;
+
+            border:
+                1px solid
+                rgba(125,211,252,.22);
+
+            background:
+                rgba(14,165,233,.12);
+
+            font-size: 9px;
+
+            font-weight: 900;
+
+            letter-spacing: 1.3px;
+
+        }
+
+
+        .auth-visual-content h1 {
+
+            margin: 0;
+
+            max-width: 560px;
+
+            font-size:
+                clamp(
+                    38px,
+                    5vw,
+                    64px
+                );
+
+            line-height: 1.02;
+
+            letter-spacing: -2px;
+
+        }
+
+
+        .auth-visual-content h1 span {
+
+            color: #7dd3fc;
+
+        }
+
+
+        .auth-visual-content p {
+
+            max-width: 520px;
+
+            margin: 20px 0 0;
+
+            color: #cbd5e1;
+
+            font-size: 15px;
+
+            line-height: 1.8;
+
+        }
+
+
+        .auth-features {
+
+            margin-top: 30px;
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0,1fr));
+
+            gap: 12px;
+
+        }
+
+
+        .auth-feature {
+
+            padding: 15px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            border-radius: 16px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.09);
+
+            background:
+                rgba(255,255,255,.06);
+
+            backdrop-filter:
+                blur(12px);
+
+        }
+
+
+        .auth-feature i {
+
+            width: 34px;
+
+            height: 34px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 11px;
+
+            color: #7dd3fc;
+
+            background:
+                rgba(14,165,233,.12);
+
+        }
+
+
+        .auth-feature span {
+
+            color: #e2e8f0;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            line-height: 1.5;
+
+        }
+
+
+        .auth-visual-footer {
+
+            position: relative;
+
+            z-index: 2;
+
+            color: #64748b;
+
+            font-size: 10px;
+
+        }
+
+
+        /* =========================================
+           FORMULAIRE
+        ========================================= */
+
+        .auth-form-side {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 40px 25px;
+
+            background:
+                #ffffff;
+
+        }
+
+
+        .auth-form-box {
+
+            width: min(
+                440px,
+                100%
+            );
+
+        }
+
+
+        .back-home {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-bottom: 31px;
+
+            color: var(--primary);
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+        }
+
+
+        .login-icon {
+
+            width: 58px;
+
+            height: 58px;
+
+            margin-bottom: 19px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 18px;
+
+            color: white;
+
+            font-size: 22px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #16a34a,
+                    #f59e0b
+                );
+
+            box-shadow:
+                0 15px 35px
+                rgba(37,99,235,.22);
+
+        }
+
+
+        .auth-form-box h2 {
+
+            margin: 0;
+
+            color: var(--dark);
+
+            font-size: 31px;
+
+            letter-spacing: -.7px;
+
+        }
+
+
+        .auth-form-description {
+
+            margin: 9px 0 28px;
+
+            color: var(--text-light);
+
+            font-size: 13px;
+
+            line-height: 1.7;
+
+        }
+
+
+        /* =========================================
+           MESSAGES
+        ========================================= */
+
+        .form-message {
+
+            display: none;
+
+            margin-bottom: 17px;
+
+            padding: 13px 14px;
+
+            border-radius: 13px;
+
+            font-size: 11px;
+
+            line-height: 1.6;
+
+        }
+
+
+        .form-message.show {
+            display: block;
+        }
+
+
+        .form-message.error {
+
+            color: #991b1b;
+
+            background:
+                #fef2f2;
+
+            border:
+                1px solid
+                #fecaca;
+
+        }
+
+
+        .form-message.success {
+
+            color: #166534;
+
+            background:
+                #f0fdf4;
+
+            border:
+                1px solid
+                #bbf7d0;
+
+        }
+
+
+        .form-message.info {
+
+            color: #1e40af;
+
+            background:
+                #eff6ff;
+
+            border:
+                1px solid
+                #bfdbfe;
+
+        }
+
+
+        /* =========================================
+           SESSION EXISTANTE
+        ========================================= */
+
+        .existing-session {
+
+            display: none;
+
+            margin-bottom: 18px;
+
+            padding: 14px;
+
+            border-radius: 14px;
+
+            color: #1e3a8a;
+
+            background:
+                #eff6ff;
+
+            border:
+                1px solid
+                #bfdbfe;
+
+        }
+
+
+        .existing-session.show {
+            display: block;
+        }
+
+
+        .existing-session strong {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            font-size: 11px;
+
+        }
+
+
+        .existing-session p {
+
+            margin: 0 0 11px;
+
+            font-size: 10px;
+
+            line-height: 1.6;
+
+        }
+
+
+        .session-actions {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 8px;
+
+        }
+
+
+        .session-button {
+
+            min-height: 36px;
+
+            padding: 0 11px;
+
+            border: 0;
+
+            border-radius: 9px;
+
+            font-size: 9px;
+
+            font-weight: 900;
+
+        }
+
+
+        .session-button.primary {
+
+            color: #fff;
+
+            background:
+                #16a34a;
+
+        }
+
+
+        .session-button.secondary {
+
+            color: #1e40af;
+
+            background:
+                #dbeafe;
+
+        }
+
+
+        /* =========================================
+           INPUT
+        ========================================= */
+
+        .form-group {
+
+            margin-bottom: 17px;
+
+        }
+
+
+        .form-group label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #334155;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+        }
+
+
+        .input-wrapper {
+
+            position: relative;
+
+        }
+
+
+        .input-icon {
+
+            position: absolute;
+
+            top: 50%;
+
+            left: 14px;
+
+            transform:
+                translateY(-50%);
+
+            color: #94a3b8;
+
+            font-size: 13px;
+
+            pointer-events: none;
+
+        }
+
+
+        .form-control {
+
+            width: 100%;
+
+            min-height: 50px;
+
+            padding:
+                0
+                45px
+                0
+                42px;
+
+            outline: none;
+
+            border:
+                1px solid
+                var(--border);
+
+            border-radius: 13px;
+
+            color: #052e16;
+
+            background:
+                #f8fafc;
+
+            font-size: 13px;
+
+            transition:
+                border-color .2s ease,
+                box-shadow .2s ease,
+                background .2s ease;
+
+        }
+
+
+        .form-control:focus {
+
+            border-color:
+                var(--primary);
+
+            background:
+                #ffffff;
+
+            box-shadow:
+                0 0 0 4px
+                rgba(37,99,235,.08);
+
+        }
+
+
+        .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+
+        .password-toggle {
+
+            position: absolute;
+
+            top: 50%;
+
+            right: 8px;
+
+            width: 37px;
+
+            height: 37px;
+
+            transform:
+                translateY(-50%);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border: 0;
+
+            border-radius: 9px;
+
+            color: #64748b;
+
+            background:
+                transparent;
+
+        }
+
+
+        .password-toggle:hover {
+
+            color: var(--primary);
+
+            background:
+                #eff6ff;
+
+        }
+
+
+        /* =========================================
+           OPTIONS
+        ========================================= */
+
+        .login-options {
+
+            margin:
+                2px
+                0
+                21px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 12px;
+
+        }
+
+
+        .remember-label {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            color: #64748b;
+
+            font-size: 10px;
+
+        }
+
+
+        .remember-label input {
+
+            width: 15px;
+
+            height: 15px;
+
+            accent-color:
+                var(--primary);
+
+        }
+
+
+        .forgot-link {
+
+            color: var(--primary);
+
+            font-size: 10px;
+
+            font-weight: 850;
+
+        }
+
+
+        /* =========================================
+           BOUTON
+        ========================================= */
+
+        .form-submit {
+
+            width: 100%;
+
+            min-height: 50px;
+
+            border: 0;
+
+            border-radius: 13px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 9px;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #16a34a,
+                    #0284c7
+                );
+
+            box-shadow:
+                0 13px 25px
+                rgba(37,99,235,.18);
+
+            font-size: 12px;
+
+            font-weight: 900;
+
+            transition:
+                transform .2s ease,
+                opacity .2s ease;
+
+        }
+
+
+        .form-submit:hover:not(:disabled) {
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        .form-submit:disabled {
+
+            cursor:
+                not-allowed;
+
+            opacity: .65;
+
+        }
+
+
+        .button-spinner {
+
+            width: 17px;
+
+            height: 17px;
+
+            display: none;
+
+            border:
+                2px solid
+                rgba(255,255,255,.35);
+
+            border-top-color:
+                #fff;
+
+            border-radius: 50%;
+
+            animation:
+                loginSpin
+                .7s
+                linear
+                infinite;
+
+        }
+
+
+        @keyframes loginSpin {
+
+            to {
+                transform:
+                    rotate(360deg);
+            }
+
+        }
+
+
+        /* =========================================
+           BAS FORMULAIRE
+        ========================================= */
+
+        .register-text {
+
+            margin-top: 23px;
+
+            text-align: center;
+
+            color: #64748b;
+
+            font-size: 11px;
+
+        }
+
+
+        .register-text a {
+
+            color: var(--primary);
+
+            font-weight: 900;
+
+        }
+
+
+        .security-line {
+
+            margin-top: 25px;
+
+            padding-top: 17px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 7px;
+
+            color: #94a3b8;
+
+            border-top:
+                1px solid
+                #eef2f7;
+
+            font-size: 9px;
+
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (
+            max-width: 900px
+        ) {
+
+            .auth-page {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .auth-visual {
+
+                min-height: auto;
+
+                padding:
+                    28px
+                    24px
+                    35px;
+
+            }
+
+
+            .auth-visual-content {
+
+                margin:
+                    55px
+                    0
+                    30px;
+
+            }
+
+
+            .auth-visual-content h1 {
+
+                font-size:
+                    clamp(
+                        34px,
+                        9vw,
+                        50px
+                    );
+
+            }
+
+
+            .auth-features {
+                display: none;
+            }
+
+
+            .auth-visual-footer {
+                display: none;
+            }
+
+
+            .auth-form-side {
+
+                min-height: auto;
+
+                padding:
+                    37px
+                    21px
+                    50px;
+
+            }
+
+        }
+
+
+        @media (
+            max-width: 480px
+        ) {
+
+            .auth-visual {
+
+                padding:
+                    23px
+                    18px
+                    30px;
+
+            }
+
+
+            .auth-brand-logo {
+
+                width: 45px;
+
+                height: 45px;
+
+                border-radius: 14px;
+
+            }
+
+
+            .auth-brand-text strong {
+                font-size: 17px;
+            }
+
+
+            .auth-visual-content {
+
+                margin:
+                    40px
+                    0
+                    5px;
+
+            }
+
+
+            .auth-visual-content h1 {
+
+                font-size: 35px;
+
+                letter-spacing: -1px;
+
+            }
+
+
+            .auth-visual-content p {
+
+                font-size: 12px;
+
+            }
+
+
+            .auth-form-side {
+
+                padding:
+                    30px
+                    17px
+                    45px;
+
+            }
+
+
+            .auth-form-box h2 {
+                font-size: 27px;
+            }
+
+
+            .login-options {
+
+                align-items:
+                    flex-start;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="auth-page">
+
+
+    <!-- =========================================
+         VISUEL
+    ========================================== -->
+
+    <section class="auth-visual">
+
+
+        <a
+            href="index.html"
+            class="auth-brand"
+        >
+
+            <div class="auth-brand-logo">
+
+                <i class="fa-solid fa-solar-panel"></i>
+
+            </div>
+
+
+            <div class="auth-brand-text">
+
+                <strong>
+                    Solaris Pro
+                </strong>
+
+                <span>
+                    INVESTISSEMENT ÉNERGIE SOLAIRE
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <div class="auth-visual-content">
+
+
+            <div class="auth-eyebrow">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                ESPACE PERSONNEL
+
+            </div>
+
+
+            <h1>
+
+                Retrouvez votre
+
+                <span>
+                    espace Solaris Pro.
+                </span>
+
+            </h1>
+
+
+            <p>
+
+                Connectez-vous pour consulter votre profil,
+                vos opérations, vos investissements,
+                votre historique et votre assistance.
+
+            </p>
+
+
+            <div class="auth-features">
+
+
+                <div class="auth-feature">
+
+                    <i class="fa-solid fa-user-shield"></i>
+
+                    <span>
+                        Authentification via Supabase
+                    </span>
+
+                </div>
+
+
+                <div class="auth-feature">
+
+                    <i class="fa-solid fa-mobile-screen"></i>
+
+                    <span>
+                        Interface adaptée au mobile
+                    </span>
+
+                </div>
+
+
+                <div class="auth-feature">
+
+                    <i class="fa-solid fa-solar-panel"></i>
+
+                    <span>
+                        Packs solaires accessibles
+                        depuis votre dashboard
+                    </span>
+
+                </div>
+
+
+                <div class="auth-feature">
+
+                    <i class="fa-solid fa-headset"></i>
+
+                    <span>
+                        Assistance et suivi
+                        depuis votre compte
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <div class="auth-visual-footer">
+
+            © 2026 Solaris Pro.
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =========================================
+         FORMULAIRE
+    ========================================== -->
+
+    <section class="auth-form-side">
+
+
+        <div class="auth-form-box">
+
+
+            <a
+                href="index.html"
+                class="back-home"
+            >
+
+                <i class="fa-solid fa-arrow-left"></i>
+
+                Retour à l'accueil
+
+            </a>
+
+
+            <div class="login-icon">
+
+                <i class="fa-solid fa-right-to-bracket"></i>
+
+            </div>
+
+
+            <h2>
+                Bon retour !
+            </h2>
+
+
+            <p class="auth-form-description">
+
+                Entrez votre adresse email et votre
+                mot de passe pour accéder à votre compte.
+
+            </p>
+
+
+            <!-- SESSION EXISTANTE -->
+
+            <div
+                id="existingSession"
+                class="existing-session"
+            >
+
+                <strong id="existingSessionTitle">
+                    Une session est déjà active.
+                </strong>
+
+
+                <p id="existingSessionText">
+
+                    Vous pouvez continuer vers votre dashboard
+                    ou vous reconnecter avec un autre compte.
+
+                </p>
+
+
+                <div class="session-actions">
+
+
+                    <button
+                        type="button"
+                        id="continueSessionButton"
+                        class="session-button primary"
+                    >
+
+                        Dashboard
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="closeSessionButton"
+                        class="session-button secondary"
+                    >
+
+                        Fermer la session
+
+                    </button>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="formMessage"
+                class="form-message"
+            ></div>
+
+
+            <!-- FORMULAIRE -->
+
+            <form
+                id="loginForm"
+                novalidate
+            >
+
+
+                <div class="form-group">
+
+
+                    <label for="email">
+
+                        Adresse email
+
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+
+                        <i
+                            class="
+                                fa-regular
+                                fa-envelope
+                                input-icon
+                            "
+                        ></i>
+
+
+                        <input
+                            type="email"
+                            id="email"
+                            class="form-control"
+                            placeholder="exemple@email.com"
+                            autocomplete="email"
+                            required
+                        >
+
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-group">
+
+
+                    <label for="password">
+
+                        Mot de passe
+
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+
+                        <i
+                            class="
+                                fa-solid
+                                fa-lock
+                                input-icon
+                            "
+                        ></i>
+
+
+                        <input
+                            type="password"
+                            id="password"
+                            class="form-control"
+                            placeholder="Votre mot de passe"
+                            autocomplete="current-password"
+                            required
+                        >
+
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="password-toggle"
+                            aria-label="Afficher ou masquer le mot de passe"
+                        >
+
+                            <i class="fa-regular fa-eye"></i>
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="login-options">
+
+
+                    <label class="remember-label">
+
+                        <input
+                            type="checkbox"
+                            id="rememberEmail"
+                        >
+
+                        Mémoriser mon email
+
+                    </label>
+
+
+                    <a
+                        href="forgot-password.html"
+                        class="forgot-link"
+                    >
+
+                        Mot de passe oublié ?
+
+                    </a>
+
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    id="loginButton"
+                    class="form-submit"
+                >
+
+
+                    <span
+                        id="loginButtonIcon"
+                    >
+
+                        <i class="fa-solid fa-right-to-bracket"></i>
+
+                    </span>
+
+
+                    <span
+                        id="loginButtonText"
+                    >
+                        Se connecter
+                    </span>
+
+
+                    <span
+                        id="loginSpinner"
+                        class="button-spinner"
+                    ></span>
+
+
+                </button>
+
+
+            </form>
+
+
+            <p class="register-text">
+
+                Vous n'avez pas encore de compte ?
+
+                <a href="register.html">
+
+                    Créer un compte
+
+                </a>
+
+            </p>
+
+
+            <div class="security-line">
+
+                <i class="fa-solid fa-shield-halved"></i>
+
+                Authentification protégée par Supabase
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+</div>
+
+
+
+<!-- =========================================
+     SUPABASE
+========================================== -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+></script>
+
+
+<script
+    src="supabase.js?v=20260916-assistance-depot-v1"
+></script>
+
+
+
+<script>
+
+"use strict";
+
+
+/* ============================================================
+   ELEMENTS
+============================================================ */
+
+const loginForm =
+    document.getElementById(
+        "loginForm"
+    );
+
+
+const emailInput =
+    document.getElementById(
+        "email"
+    );
+
+
+const passwordInput =
+    document.getElementById(
+        "password"
+    );
+
+
+const rememberEmail =
+    document.getElementById(
+        "rememberEmail"
+    );
+
+
+const loginButton =
+    document.getElementById(
+        "loginButton"
+    );
+
+
+const loginButtonText =
+    document.getElementById(
+        "loginButtonText"
+    );
+
+
+const loginButtonIcon =
+    document.getElementById(
+        "loginButtonIcon"
+    );
+
+
+const loginSpinner =
+    document.getElementById(
+        "loginSpinner"
+    );
+
+
+const formMessage =
+    document.getElementById(
+        "formMessage"
+    );
+
+
+const existingSession =
+    document.getElementById(
+        "existingSession"
+    );
+
+
+const existingSessionText =
+    document.getElementById(
+        "existingSessionText"
+    );
+
+
+let detectedSession =
+    null;
+
+
+
+/* ============================================================
+   MESSAGE
+============================================================ */
+
+function showMessage(
+    message,
+    type = "info"
+) {
+
+    formMessage.textContent =
+        String(
+            message || ""
+        );
+
+
+    formMessage.className =
+        "form-message show " +
+        type;
+
+}
+
+
+function clearMessage() {
+
+    formMessage.textContent =
+        "";
+
+
+    formMessage.className =
+        "form-message";
+
+}
+
+
+
+/* ============================================================
+   ETAT BOUTON
+============================================================ */
+
+function setLoading(
+    loading
+) {
+
+    loginButton.disabled =
+        loading;
+
+
+    loginSpinner.style.display =
+        loading
+            ? "inline-block"
+            : "none";
+
+
+    loginButtonIcon.style.display =
+        loading
+            ? "none"
+            : "inline";
+
+
+    loginButtonText.textContent =
+        loading
+            ? "Connexion..."
+            : "Se connecter";
+
+}
+
+
+
+/* ============================================================
+   MOT DE PASSE
+============================================================ */
+
+document.getElementById(
+    "togglePassword"
+).addEventListener(
+    "click",
+    function () {
+
+        const hidden =
+            passwordInput.type ===
+            "password";
+
+
+        passwordInput.type =
+            hidden
+                ? "text"
+                : "password";
+
+
+        this.innerHTML =
+            hidden
+                ?
+                '<i class="fa-regular fa-eye-slash"></i>'
+                :
+                '<i class="fa-regular fa-eye"></i>';
+
+    }
+);
+
+
+
+/* ============================================================
+   EMAIL MEMORISE
+============================================================ */
+
+function loadRememberedEmail() {
+
+    try {
+
+        const saved =
+            localStorage.getItem(
+                "hyqd_remembered_email"
+            );
+
+
+        if (saved) {
+
+            emailInput.value =
+                saved;
+
+
+            rememberEmail.checked =
+                true;
+
+        }
+
+    } catch (error) {
+
+        console.warn(
+            "Email mémorisé indisponible.",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* ============================================================
+   PARAMETRES URL
+============================================================ */
+
+function readPageMessages() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    if (
+        params.get(
+            "registered"
+        ) === "1"
+    ) {
+
+        showMessage(
+            "Votre compte a été créé. Vous pouvez maintenant vous connecter.",
+            "success"
+        );
+
+    }
+
+
+    if (
+        params.get(
+            "reset"
+        ) === "1"
+    ) {
+
+        showMessage(
+            "Votre mot de passe a été modifié. Connectez-vous avec votre nouveau mot de passe.",
+            "success"
+        );
+
+    }
+
+
+    if (
+        params.get(
+            "logout"
+        ) === "1"
+    ) {
+
+        showMessage(
+            "Vous êtes maintenant déconnecté.",
+            "success"
+        );
+
+    }
+
+}
+
+
+
+/* ============================================================
+   VERIFICATION SESSION SANS REDIRECTION
+============================================================ */
+
+async function detectExistingSession() {
+
+    /*
+     * IMPORTANT :
+     *
+     * Cette fonction NE REDIRIGE JAMAIS automatiquement.
+     *
+     * Elle sert seulement à informer l'utilisateur.
+     *
+     * Cela supprime la boucle :
+     * login -> dashboard -> login -> dashboard.
+     */
+
+    try {
+
+        if (
+            typeof getSupabaseSession !==
+            "function"
+        ) {
+
+            return;
+        }
+
+
+        const result =
+            await getSupabaseSession();
+
+
+        let session = null;
+
+
+        if (
+            result?.session
+        ) {
+
+            session =
+                result.session;
+
+        } else if (
+            result?.data?.session
+        ) {
+
+            session =
+                result.data.session;
+
+        } else if (
+            result?.user
+        ) {
+
+            session =
+                result;
+
+        }
+
+
+        if (!session) {
+
+            return;
+
+        }
+
+
+        detectedSession =
+            session;
+
+
+        const email =
+            session?.user?.email ||
+            session?.email ||
+            "";
+
+
+        if (email) {
+
+            existingSessionText.textContent =
+                "Une session Supabase est actuellement active pour " +
+                email +
+                ". Vous pouvez ouvrir le dashboard ou fermer cette session.";
+
+        }
+
+
+        existingSession.classList.add(
+            "show"
+        );
+
+
+    } catch (error) {
+
+        console.warn(
+            "Vérification session :",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* ============================================================
+   CONTINUER SESSION
+============================================================ */
+
+document.getElementById(
+    "continueSessionButton"
+).addEventListener(
+    "click",
+    async function () {
+
+        /*
+         * Redirection uniquement après action
+         * volontaire de l'utilisateur.
+         */
+
+        const roleResult = await getSupabaseCurrentUserRole();
+        window.location.href = roleResult?.role === "support_agent" ? "admin.html" : "dashboard.html";
+
+    }
+);
+
+
+
+/* ============================================================
+   FERMER SESSION EXISTANTE
+============================================================ */
+
+document.getElementById(
+    "closeSessionButton"
+).addEventListener(
+    "click",
+    async function () {
+
+
+        try {
+
+
+            this.disabled =
+                true;
+
+
+            this.textContent =
+                "Fermeture...";
+
+
+            if (
+                typeof logoutSupabaseUser ===
+                "function"
+            ) {
+
+                await logoutSupabaseUser();
+
+            }
+
+
+            detectedSession =
+                null;
+
+
+            existingSession.classList.remove(
+                "show"
+            );
+
+
+            showMessage(
+                "Session précédente fermée. Vous pouvez maintenant vous connecter.",
+                "success"
+            );
+
+
+        } catch (error) {
+
+
+            console.error(
+                "Fermeture session :",
+                error
+            );
+
+
+            showMessage(
+                "Impossible de fermer la session précédente.",
+                "error"
+            );
+
+
+        } finally {
+
+
+            this.disabled =
+                false;
+
+
+            this.textContent =
+                "Fermer la session";
+
+        }
+
+    }
+);
+
+
+
+/* ============================================================
+   CONNEXION
+============================================================ */
+
+loginForm.addEventListener(
+    "submit",
+    async function (
+        event
+    ) {
+
+
+        event.preventDefault();
+
+
+        clearMessage();
+
+
+        const email =
+            emailInput.value
+                .trim()
+                .toLowerCase();
+
+
+        const password =
+            passwordInput.value;
+
+
+        /* --------------------------
+           VALIDATION EMAIL
+        --------------------------- */
+
+        if (!email) {
+
+            showMessage(
+                "Veuillez saisir votre adresse email.",
+                "error"
+            );
+
+
+            emailInput.focus();
+
+
+            return;
+
+        }
+
+
+        const emailPattern =
+            /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+        if (
+            !emailPattern.test(
+                email
+            )
+        ) {
+
+            showMessage(
+                "Veuillez saisir une adresse email valide.",
+                "error"
+            );
+
+
+            emailInput.focus();
+
+
+            return;
+
+        }
+
+
+        /* --------------------------
+           VALIDATION MOT DE PASSE
+        --------------------------- */
+
+        if (!password) {
+
+            showMessage(
+                "Veuillez saisir votre mot de passe.",
+                "error"
+            );
+
+
+            passwordInput.focus();
+
+
+            return;
+
+        }
+
+
+        if (
+            password.length < 6
+        ) {
+
+            showMessage(
+                "Le mot de passe doit contenir au moins 6 caractères.",
+                "error"
+            );
+
+
+            passwordInput.focus();
+
+
+            return;
+
+        }
+
+
+        /* --------------------------
+           SUPABASE DISPONIBLE
+        --------------------------- */
+
+        if (
+            typeof loginSupabaseUser !==
+            "function"
+        ) {
+
+            showMessage(
+                "Le service de connexion Supabase n'est pas disponible. Vérifiez supabase.js.",
+                "error"
+            );
+
+
+            return;
+
+        }
+
+
+        setLoading(
+            true
+        );
+
+
+        try {
+
+
+            const result =
+                await loginSupabaseUser(
+                    email,
+                    password
+                );
+
+
+            /*
+             * Votre supabase.js peut retourner :
+             *
+             * { success:true, ... }
+             *
+             * ou directement une session/utilisateur.
+             */
+
+            const success =
+                result?.success === true ||
+                Boolean(
+                    result?.session
+                ) ||
+                Boolean(
+                    result?.data?.session
+                ) ||
+                Boolean(
+                    result?.user
+                );
+
+
+            if (!success) {
+
+
+                const message =
+                    result?.message ||
+                    result?.error?.message ||
+                    "Email ou mot de passe incorrect.";
+
+
+                throw new Error(
+                    message
+                );
+
+            }
+
+
+            /* --------------------------
+               MEMORISER EMAIL
+            --------------------------- */
+
+            try {
+
+
+                if (
+                    rememberEmail.checked
+                ) {
+
+                    localStorage.setItem(
+                        "hyqd_remembered_email",
+                        email
+                    );
+
+                } else {
+
+                    localStorage.removeItem(
+                        "hyqd_remembered_email"
+                    );
+
+                }
+
+
+            } catch (
+                storageError
+            ) {
+
+                console.warn(
+                    storageError
+                );
+
+            }
+
+
+            showMessage(
+                "Connexion réussie. Ouverture de votre espace...",
+                "success"
+            );
+
+
+            /*
+             * C'est UNIQUEMENT ici que le login
+             * renvoie automatiquement au dashboard.
+             */
+
+            const roleResult = await getSupabaseCurrentUserRole();
+            const destination = roleResult?.role === "support_agent" ? "admin.html" : "dashboard.html";
+            window.setTimeout(
+                function () {
+                    window.location.href = destination;
+
+                },
+                600
+            );
+
+
+        } catch (error) {
+
+
+            console.error(
+                "Connexion :",
+                error
+            );
+
+
+            let message =
+                error?.message ||
+                "Impossible de vous connecter.";
+
+
+            const lower =
+                message.toLowerCase();
+
+
+            if (
+                lower.includes(
+                    "invalid login credentials"
+                )
+            ) {
+
+                message =
+                    "Adresse email ou mot de passe incorrect.";
+
+            }
+
+
+            showMessage(
+                message,
+                "error"
+            );
+
+
+        } finally {
+
+
+            setLoading(
+                false
+            );
+
+        }
+
+    }
+);
+
+
+
+/* ============================================================
+   DEMARRAGE
+============================================================ */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function () {
+
+
+        /*
+         * 1. On affiche toujours la page.
+         *
+         * AUCUNE REDIRECTION AUTOMATIQUE.
+         */
+
+
+        loadRememberedEmail();
+
+
+        readPageMessages();
+
+
+        /*
+         * 2. Vérification passive de la session.
+         *
+         * Même s'il existe déjà une session,
+         * la page reste affichée.
+         */
+
+        await detectExistingSession();
+
+
+        /*
+         * 3. Champ email disponible.
+         */
+
+        if (
+            !emailInput.value
+        ) {
+
+            emailInput.focus();
+
+        }
+
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
