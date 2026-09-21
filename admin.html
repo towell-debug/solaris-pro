@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Administration | Solaris Pro</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#334155}
+button,input,textarea{font:inherit}
+.loading,.denied{position:fixed;inset:0;z-index:99;display:flex;align-items:center;justify-content:center;flex-direction:column;background:#021a0e;color:#fff}
+.denied{display:none}
+.denied button,.btn{border:0;border-radius:9px;padding:10px 14px;color:#fff;background:#16a34a;font-weight:700}
+.app{display:none;min-height:100vh;grid-template-columns:245px 1fr}
+.side{background:linear-gradient(160deg,#021a0e,#166534);color:#fff;padding:20px;position:sticky;top:0;height:100vh}
+.brand{font-size:20px;font-weight:900;margin-bottom:20px}
+.admin-id{padding:12px;background:#ffffff12;border-radius:12px;margin-bottom:15px}
+.admin-id small,.admin-id span{display:block;color:#bbf7d0;margin-top:4px}
+.nav{display:grid;gap:7px}
+.nav button{padding:12px;border:0;border-radius:10px;background:transparent;color:#cbd5e1;text-align:left}
+.nav button.active,.nav button:hover{background:#ffffff18;color:#fff}
+.main{min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:#fff;position:sticky;top:0;z-index:10;border-bottom:1px solid #e2e8f0}
+.top-actions{display:flex;gap:8px}
+.icon{width:40px;height:40px;border:1px solid #e2e8f0;border-radius:10px;background:#fff}
+.content{padding:20px;max-width:1500px;margin:auto}
+.hero{padding:22px;border-radius:18px;background:linear-gradient(135deg,#021a0e,#16a34a);color:#fff}
+.hero h2{margin:0 0 8px}
+.stats{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin:15px 0}
+.stat,.card{background:#fff;border:1px solid #e2e8f0;border-radius:14px}
+.stat{padding:15px}
+.stat small{color:#64748b}
+.stat strong{display:block;font-size:20px;margin-top:6px}
+.section{display:none}
+.section.active{display:block}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0 10px}
+.section-head h3{margin:0}
+.search{padding:9px;border:1px solid #cbd5e1;border-radius:9px}
+.table{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:800px}
+th,td{padding:11px;border-bottom:1px solid #e2e8f0;text-align:left;font-size:12px}
+th{background:#f8fafc}
+.status{padding:5px 8px;border-radius:20px;font-weight:800;font-size:10px;background:#fef3c7}
+.approved,.active,.answered{background:#dcfce7;color:#166534}
+.rejected,.cancelled{background:#fee2e2;color:#991b1b}
+.actions{display:flex;gap:6px}
+.ok{background:#059669}
+.no{background:#dc2626}
+.reply{background:#7c3aed}
+.critical{background:#7f1d1d;color:#fff}
+.high{background:#fee2e2;color:#991b1b}
+.medium{background:#fef3c7;color:#92400e}
+.low{background:#dbeafe;color:#1e40af}
+.empty{text-align:center;color:#94a3b8;padding:25px}
+.modal{display:none;position:fixed;inset:0;z-index:100;background:#021a0ebb;align-items:center;justify-content:center;padding:15px}
+.modal.show{display:flex}
+.box{background:#fff;width:min(500px,100%);border-radius:16px;padding:20px}
+.box textarea{width:100%;min-height:100px;padding:10px;margin:10px 0;border:1px solid #cbd5e1;border-radius:9px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px}
+.proof-box{margin:12px 0;padding:12px;border:1px solid #dbeafe;border-radius:12px;background:#eff6ff}
+.proof-box strong{display:block;margin-bottom:7px;color:#1e3a8a}
+.proof-box p{margin:0;color:#64748b;font-size:12px;line-height:1.5}
+.proof-image{display:block;width:100%;max-height:70vh;object-fit:contain;border-radius:10px;background:#f8fafc}
+.proof-missing{color:#991b1b!important;background:#fef2f2;border-color:#fecaca}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.toast{position:fixed;right:15px;bottom:15px;z-index:200;padding:12px 16px;border-radius:10px;background:#052e16;color:#fff}
+.support-files{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.support-file-btn{border:1px solid #bfdbfe;border-radius:8px;padding:6px 8px;background:#eff6ff;color:#15803d;font-size:11px;font-weight:700;cursor:pointer}
+.support-file-btn:disabled{opacity:.6;cursor:wait}
+.support-upload{margin:10px 0;padding:10px;border:1px dashed #93c5fd;border-radius:10px;background:#eff6ff}
+.support-upload input{width:100%;margin-top:7px;font-size:12px}
+.support-upload small{display:block;margin-top:6px;color:#64748b;line-height:1.4}
+.support-upload-preview{display:grid;gap:5px;margin-top:7px;font-size:11px;color:#334155}
+.menu-mobile{display:none}
+
+@media(max-width:850px){
+.app{grid-template-columns:1fr}
+.side{position:fixed;left:-260px;width:245px;z-index:50;transition:.2s}
+.side.show{left:0}
+.menu-mobile{display:inline-block}
+.content{padding:12px}
+.stats{grid-template-columns:1fr 1fr}
+.top{padding:10px 12px}
+.card{border:0;background:transparent}
+table,tbody{display:block;min-width:0}
+thead{display:none}
+tr{display:block;background:#fff;border-radius:13px;padding:10px;margin-bottom:10px}
+td{display:flex;justify-content:space-between;gap:10px}
+td:before{content:attr(data-label);font-weight:800;color:#64748b}
+.actions{justify-content:flex-end}
+}
+
+.operations-export { background: #fff; border: 1px solid #dbe3ef; border-radius: 16px; padding: 18px; margin: 16px 0; color: #052e16; }
+.operations-export h4 { margin: 0 0 8px; font-size: 16px; }
+.operations-export p { font-size: 13px; line-height: 1.5; margin: 8px 0; color: #475569; }
+.export-fields { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-top: 14px; }
+.export-fields label { display: grid; gap: 6px; flex: 1 1 150px; font-size: 13px; min-width: 0; }
+.export-fields input, .export-fields select { width: 100%; min-width: 0; box-sizing: border-box; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; color: #052e16; font: inherit; }
+.export-fields button { background: #16a34a; color: #fff; border: 0; border-radius: 10px; padding: 12px 16px; cursor: pointer; font-weight: 700; }
+.export-fields button:disabled { opacity: .6; cursor: wait; }
+
+.mfa-panel[hidden] { display: none; }
+.mfa-panel { position: fixed; inset: 0; z-index: 150; background: #eff6ff; overflow-y: auto; padding: 24px 16px; }
+.mfa-card { max-width: 460px; margin: 24px auto; background: #fff; padding: 24px; border-radius: 18px; color: #052e16; }
+.mfa-card p { font-size: 14px; line-height: 1.6; }
+.mfa-card label { display: grid; gap: 8px; margin: 14px 0; }
+.mfa-card input,.mfa-card select { padding: 12px; width: 100%; min-width: 0; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 16px; }
+.mfa-card img { display: block; max-width: 240px; width: 100%; margin: 16px auto; }
+.staff-support-only [data-page]:not([data-page="support"]),
+.staff-support-only .stats, .staff-support-only .section:not(#support) { display: none !important; }
+.support-event { margin: 12px 0; padding: 12px; border: 1px solid #dbe3ef; border-radius: 10px; background: #f8fafc; }
+.support-event p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
+.support-event small { color: #64748b; }
+#supportActivitySummary { padding: 14px; background: #eff6ff; border-radius: 10px; }
+.support-message-text,.support-last-reply p { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }
+.support-last-reply { margin-top: 12px; padding: 12px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; text-align: left; }
+.support-last-reply strong,.support-last-reply small { display: block; }
+.support-last-reply small,.support-no-reply { color: #64748b; font-size: 12px; margin-top: 6px; }
+.support-last-reply p { margin: 8px 0 0; }
+.support-no-reply { display: block; }
+</style>
+</head>
+
+<body>
+<section id="adminMfaPanel" class="mfa-panel" hidden>
+<div class="mfa-card">
+<h1>Protection de l’administration</h1>
+<p>Confirmez votre identité avec votre application d’authentification.</p>
+<p id="adminMfaMessage" role="status" aria-live="polite"></p>
+<button id="adminMfaSetup" class="btn" type="button">Configurer mon application</button>
+<div id="adminMfaEnrollment" hidden>
+<img id="adminMfaQr" alt="QR code de configuration de votre application d’authentification">
+<label>Clé de configuration (si vous utilisez ce téléphone)<input id="adminMfaSecret" type="text" readonly autocomplete="off"></label>
+<p>Dans votre application d’authentification, ajoutez un compte avec cette clé si vous ne pouvez pas scanner le QR code. Ne partagez ni la clé ni le QR code.</p>
+</div>
+<form id="adminMfaForm">
+<select id="adminMfaFactor" aria-label="Application d’authentification" hidden></select>
+<label>Code à 6 chiffres<input id="adminMfaCode" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required></label>
+<button id="adminMfaVerify" class="btn ok" type="submit" disabled>Vérifier et accéder</button>
+</form>
+<p>Si vous perdez l’accès à votre application, le propriétaire du projet devra réinitialiser votre facteur depuis Supabase.</p>
+<button class="btn" type="button" onclick="window.location.reload()">Réessayer</button>
+<button id="adminMfaLogout" class="btn no" type="button">Se déconnecter</button>
+</div>
+</section>
+
+
+<div id="loading" class="loading">
+<h2>Solaris Pro</h2>
+<p>Chargement sécurisé...</p>
+</div>
+
+<div id="denied" class="denied">
+<h2>Accès refusé</h2>
+<p id="deniedText"></p>
+<button onclick="location.href='login.html'">Connexion</button>
+</div>
+
+<div id="app" class="app">
+
+<aside id="side" class="side">
+
+<div class="brand">
+<i class="fa-solid fa-shield-halved"></i>
+Solaris Pro
+</div>
+
+<div class="admin-id">
+<b id="adminName">Administrateur</b>
+<small id="adminEmail">...</small>
+<span id="adminRole">ADMIN</span>
+</div>
+
+<nav class="nav">
+<button class="active" data-page="overview"><i class="fa-solid fa-chart-pie"></i> Vue générale</button>
+<button data-page="users"><i class="fa-solid fa-users"></i> Utilisateurs</button>
+<button data-page="deposits"><i class="fa-solid fa-arrow-down"></i> Dépôts</button>
+<button data-page="withdrawals"><i class="fa-solid fa-arrow-up"></i> Retraits</button>
+<button data-page="investments"><i class="fa-solid fa-solar-panel"></i> Investissements</button>
+<button data-page="referralRewards"><i class="fa-solid fa-gift"></i> Bonus parrainage</button>
+<button data-page="auditLogs"><i class="fa-solid fa-shield-halved"></i> Journal de sécurité</button>
+<button data-page="fraudAlerts"><i class="fa-solid fa-triangle-exclamation"></i> Alertes antifraude</button>
+<button data-page="supportActivity"><i class="fa-solid fa-list-check"></i> Suivi assistance</button>
+<button data-page="support"><i class="fa-solid fa-headset"></i> Assistance</button>
+<button data-page="phoneChanges"><i class="fa-solid fa-mobile-screen-button"></i> Changements de numéro</button>
+<button id="logoutSide"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+</nav>
+
+</aside>
+
+<main class="main">
+
+<header class="top">
+
+<div>
+<button id="menu" class="icon menu-mobile"><i class="fa-solid fa-bars"></i></button>
+<b id="title">Administration</b>
+</div>
+
+<div class="top-actions">
+<button id="refresh" class="icon"><i class="fa-solid fa-rotate"></i></button>
+<button id="logout" class="icon"><i class="fa-solid fa-right-from-bracket"></i></button>
+</div>
+
+</header>
+
+<div class="content">
+
+<p id="adminSecurityStatus" role="status" style="padding:12px;background:#eff6ff;border-radius:10px"></p>
+<section class="hero">
+<h2>Centre de contrôle</h2>
+<p>Gestion des utilisateurs, opérations financières, investissements et demandes d'assistance.</p>
+</section>
+
+<div class="stats">
+<div class="stat"><small>Utilisateurs</small><strong id="sUsers">0</strong></div>
+<div class="stat"><small>Dépôts en attente</small><strong id="sDeposits">0</strong></div>
+<div class="stat"><small>Retraits en attente</small><strong id="sWithdrawals">0</strong></div>
+<div class="stat"><small>Investissements actifs</small><strong id="sInvestments">0</strong></div>
+<div class="stat"><small>Tickets ouverts</small><strong id="sTickets">0</strong></div>
+<div class="stat"><small>Numéros en attente</small><strong id="sPhoneChanges">0</strong></div>
+<div class="stat"><small>Alertes actives</small><strong id="sFraudAlerts">0</strong></div>
+</div>
+
+<section id="overview" class="section active">
+<div class="section-head"><h3>Vue générale</h3></div>
+<form class="operations-export" data-operations-export="admin">
+<h4>Exporter les opérations des utilisateurs</h4>
+<p>Fichier CSV compatible avec Excel. Tous les utilisateurs, tous les statuts. Laissez les dates vides pour exporter tout l’historique.</p>
+<div class="export-fields">
+<label>Opérations<select name="operationType"><option value="all">Dépôts et retraits</option><option value="deposits">Dépôts</option><option value="withdrawals">Retraits</option></select></label>
+<label>Du<input type="date" name="startDate"></label>
+<label>Au (inclus)<input type="date" name="endDate"></label>
+<button type="submit">Télécharger le CSV</button>
+</div>
+<p>Montants en FCFA. Dates en UTC (heure de Côte d’Ivoire). Les recherches dans les tableaux ne limitent pas cet export.</p>
+<p role="status" aria-live="polite"></p>
+</form>
+
+<div class="card empty">Utilisez le menu pour consulter et traiter les données.</div>
+</section>
+
+<section id="users" class="section">
+<div class="section-head">
+<h3>Utilisateurs</h3>
+<input class="search" data-search="users" placeholder="Rechercher">
+</div>
+<div class="card table">
+<table>
+<thead><tr><th>Nom</th><th>Email</th><th>Téléphone</th><th>Solde</th><th>Inscription</th></tr></thead>
+<tbody id="usersBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="deposits" class="section">
+<div class="section-head">
+<h3>Dépôts</h3>
+<input class="search" data-search="deposits" placeholder="Rechercher">
+</div>
+<div class="card table">
+<table>
+<thead><tr><th>Utilisateur</th><th>Brut</th><th>Frais</th><th>Net</th><th>Méthode</th><th>Numéro de transaction</th><th>Preuve</th><th>Statut</th><th>Action</th></tr></thead>
+<tbody id="depositsBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="withdrawals" class="section">
+<div class="section-head">
+<h3>Retraits</h3>
+<input class="search" data-search="withdrawals" placeholder="Rechercher">
+</div>
+<div class="card table">
+<table>
+<thead><tr><th>Utilisateur</th><th>Brut</th><th>Frais</th><th>Net</th><th>Destination</th><th>Statut</th><th>Action</th></tr></thead>
+<tbody id="withdrawalsBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="investments" class="section">
+<div class="section-head">
+<h3>Investissements</h3>
+<input class="search" data-search="investments" placeholder="Rechercher">
+</div>
+<div class="card table">
+<table>
+<thead><tr><th>Utilisateur</th><th>Pack</th><th>Montant</th><th>Gain/jour</th><th>Crédité</th><th>Statut</th></tr></thead>
+<tbody id="investmentsBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="referralRewards" class="section">
+<div class="section-head">
+<h3>Historique des bonus de parrainage</h3>
+<input class="search" data-search="referralRewards" placeholder="Rechercher">
+</div>
+<div class="card table">
+<table>
+<thead><tr><th>Parrain</th><th>Filleul</th><th>Premier dépôt</th><th>Taux</th><th>Bonus versé</th><th>Date</th></tr></thead>
+<tbody id="referralRewardsBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="supportActivity" class="section">
+<div class="section-head"><h3>Suivi du travail de l’assistance</h3></div>
+<form id="supportActivityFilters" class="card">
+<div class="export-fields">
+<label>Agent<select id="supportActivityAgent"><option value="">Tous les intervenants</option></select></label>
+<label>Du<input id="supportActivityFrom" type="date"></label>
+<label>Au (inclus)<input id="supportActivityTo" type="date"></label>
+<button type="submit">Afficher</button>
+</div></form>
+<p id="supportActivitySummary" role="status"></p>
+<p>Les compteurs couvrent toute la période sélectionnée, à partir de l’installation de l’historique. Heures UTC. La première page s’actualise toutes les 30 secondes lorsque cet écran est visible.</p>
+<div class="card table"><table><thead><tr><th>Date</th><th>Intervenant</th><th>Ticket</th><th>Action</th><th>Réponse</th></tr></thead><tbody id="supportActivityBody"></tbody></table></div>
+<button id="supportActivityMore" class="btn" type="button" hidden>Afficher la suite</button>
+</section>
+<section id="support" class="section">
+<div class="section-head">
+<h3>Assistance</h3>
+<input class="search" data-search="support" placeholder="Rechercher">
+</div>
+<div class="card table">
+<table>
+<thead><tr><th>Utilisateur</th><th>Sujet</th><th>Message</th><th>Statut</th><th>Action</th></tr></thead>
+<tbody id="supportBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="auditLogs" class="section">
+<div class="section-head">
+<h3>Journal de sécurité</h3>
+<input class="search" data-search="auditLogs" placeholder="Rechercher">
+</div>
+<div class="card table">
+<table>
+<thead><tr><th>Administrateur</th><th>Action</th><th>Opération</th><th>Ancien statut</th><th>Nouveau statut</th><th>Note</th><th>Date</th></tr></thead>
+<tbody id="auditLogsBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="fraudAlerts" class="section">
+<div class="section-head">
+<h3>Alertes antifraude</h3>
+<input class="search" data-search="fraudAlerts" placeholder="Rechercher">
+</div>
+<div class="card table">
+<table>
+<thead><tr><th>Utilisateur</th><th>Gravité</th><th>Type</th><th>Opération</th><th>Message</th><th>Statut</th><th>Date</th><th>Action</th></tr></thead>
+<tbody id="fraudAlertsBody"></tbody>
+</table>
+</div>
+</section>
+
+<section id="phoneChanges" class="section">
+<div class="section-head">
+<h3>Changements de numéro</h3>
+<input class="search" data-search="phoneChanges" placeholder="Rechercher">
+</div>
+<div class="card table">
+<table>
+<thead><tr><th>Utilisateur</th><th>Ancien numéro</th><th>Nouveau numéro</th><th>Date</th><th>Statut</th><th>Note</th><th>Action</th></tr></thead>
+<tbody id="phoneChangesBody"></tbody>
+</table>
+</div>
+</section>
+
+</div>
+</main>
+</div>
+
+<div id="reviewModal" class="modal">
+<div class="box">
+<h3>Traiter l'opération</h3>
+<div id="reviewInfo"></div>
+<div id="reviewProofStatus" class="proof-box"></div>
+<textarea id="reviewNote" placeholder="Note facultative"></textarea>
+<div class="modal-actions">
+<button class="btn no" data-close="reviewModal">Annuler</button>
+<button id="rejectReview" class="btn no">Refuser</button>
+<button id="approveReview" class="btn ok">Valider</button>
+</div>
+</div>
+
+<div id="proofModal" class="modal">
+<div class="box">
+<h3>Preuve de paiement</h3>
+<div id="proofLoading" class="proof-box">Chargement sécurisé...</div>
+<img id="proofImage" class="proof-image" alt="Preuve de paiement">
+<div class="modal-actions" style="margin-top:14px">
+<button class="btn no" data-close="proofModal">Fermer</button>
+</div>
+</div>
+</div>
+</div>
+
+<div id="replyModal" class="modal">
+<div class="box">
+<h3>Répondre au ticket</h3>
+<div id="ticketInfo"></div>
+<div id="supportConversation" aria-live="polite"></div>
+<textarea id="ticketReply" maxlength="3500" placeholder="Votre réponse"></textarea>
+<div class="support-upload">
+<label for="ticketReplyAttachments"><strong><i class="fa-solid fa-paperclip"></i> Pièces jointes</strong></label>
+<input id="ticketReplyAttachments" type="file" multiple accept="image/*,video/*,.pdf,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip">
+<small>Jusqu’à 3 fichiers, 20 Mo maximum par fichier.</small>
+<div id="ticketReplyAttachmentsPreview" class="support-upload-preview"></div>
+</div>
+<label><input id="closeTicket" type="checkbox"> Fermer le ticket</label>
+<div class="modal-actions">
+<button class="btn no" data-close="replyModal">Annuler</button>
+<button id="sendReply" class="btn reply">Envoyer</button>
+</div>
+</div>
+</div>
+
+<div id="phoneReviewModal" class="modal">
+<div class="box">
+<h3>Traiter le changement de numéro</h3>
+<div id="phoneReviewInfo" class="proof-box"></div>
+<textarea id="phoneReviewNote" placeholder="Note facultative"></textarea>
+<div class="modal-actions">
+<button class="btn no" data-close="phoneReviewModal">Annuler</button>
+<button id="rejectPhoneChange" class="btn no">Refuser</button>
+<button id="approvePhoneChange" class="btn ok">Valider</button>
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js?v=20260916-assistance-depot-v1"></script>
+<script src="operations-export.js?v=20260915-csv-v1"></script>
+<script src="admin-mfa.js?v=20260916-assistance-depot-v1"></script>
+<script src="support-staff.js?v=20260916-assistance-depot-v1"></script>
+
+<script>
+"use strict";
+
+let currentStaffRole="";
+let profiles=[];
+let deposits=[];
+let withdrawals=[];
+let investments=[];
+let referralRewards=[];
+let auditLogs=[];
+let fraudAlerts=[];
+let tickets=[];
+let phoneChanges=[];
+let review=null;
+let currentTicket=null;
+let currentPhoneChange=null;
+
+const $=id=>document.getElementById(id);
+
+const esc=v=>String(v??"")
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;");
+
+const money=v=>
+new Intl.NumberFormat("fr-FR").format(Number(v||0))+" FCFA";
+
+const date=v=>
+v?new Date(v).toLocaleString("fr-FR"):"-";
+
+const status=v=>
+`<span class="status ${esc(v)}">${esc(v)}</span>`;
+
+
+const supportFileSize=bytes=>{
+const value=Number(bytes||0);
+if(value<1024)return `${value} o`;
+if(value<1024*1024)return `${Math.round(value/1024)} Ko`;
+return `${(value/(1024*1024)).toFixed(1)} Mo`;
+};
+
+const supportFilesHtml=attachments=>{
+const files=Array.isArray(attachments)?attachments:[];
+if(!files.length)return "";
+return `<div class="support-files">${files.map(file=>`
+<button type="button" class="support-file-btn" data-support-path="${esc(file.path)}">
+<i class="fa-solid fa-paperclip"></i> ${esc(file.name)} (${supportFileSize(file.size)})
+</button>`).join("")}</div>`;
+};
+
+async function openAdminSupportAttachment(button){
+const path=button?.dataset?.supportPath;
+if(!path)return;
+const initial=button.innerHTML;
+let previewWindow=null;
+try{
+previewWindow=window.open("about:blank","_blank");
+if(previewWindow)previewWindow.opener=null;
+}catch(_){}
+button.disabled=true;
+button.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Ouverture...';
+try{
+const result=await getSupabaseSupportAttachmentUrl(path);
+if(!result?.success||!result.url)throw new Error(result?.message||"Pièce jointe inaccessible.");
+if(previewWindow){previewWindow.location.href=result.url;}else{window.location.href=result.url;}
+}catch(error){
+try{if(previewWindow)previewWindow.close();}catch(_){}
+toast(error?.message||"Impossible d'ouvrir la pièce jointe.");
+}finally{
+button.disabled=false;
+button.innerHTML=initial;
+}
+}
+
+const name=id=>
+profiles.find(x=>String(x.id)===String(id))?.full_name||
+profiles.find(x=>String(x.id)===String(id))?.email||
+"Utilisateur";
+
+function toast(message){
+const element=document.createElement("div");
+element.className="toast";
+element.textContent=message;
+document.body.append(element);
+setTimeout(()=>element.remove(),3500);
+}
+
+function rows(body,html,columns){
+$(body).innerHTML=
+html||
+`<tr><td colspan="${columns}" class="empty">Aucune donnée</td></tr>`;
+}
+
+function openModal(id){
+$(id).classList.add("show");
+}
+
+function closeModal(id){
+$(id).classList.remove("show");
+}
+
+async function loadAdminData(){
+if(currentStaffRole === "support_agent") {
+const result=await adminGetSupabaseSupportTickets();
+if(!result?.success)throw new Error(result?.message||"Tickets indisponibles.");
+tickets=result.tickets||[];
+renderAdminData();
+return;
+}
+
+
+const results=await Promise.all([
+adminGetSupabaseProfiles(),
+adminGetSupabaseDeposits(),
+adminGetSupabaseWithdrawals(),
+adminGetSupabaseInvestments(),
+adminGetSupabaseSupportTickets(),
+adminGetSupabasePhoneChangeRequests(),
+adminGetSupabaseReferralRewards(),
+adminGetSupabaseAuditLogs(),
+adminGetSupabaseFraudAlerts()
+]);
+
+const failed=results.find(result=>!result?.success);
+if(failed)throw new Error(failed.message||"Certaines données administratives n’ont pas pu être chargées.");
+profiles=results[0].profiles||[];
+deposits=results[1].deposits||[];
+withdrawals=results[2].withdrawals||[];
+investments=results[3].investments||[];
+tickets=results[4].tickets||[];
+phoneChanges=results[5].requests||results[5].data||[];
+referralRewards=results[6].rewards||results[6].data||[];
+auditLogs=results[7].logs||results[7].data||[];
+fraudAlerts=results[8].alerts||results[8].data||[];
+
+renderAdminData();
+}
+
+function renderAdminData(){
+
+$("sUsers").textContent=profiles.length;
+
+$("sDeposits").textContent=
+deposits.filter(item=>item.status==="pending").length;
+
+$("sWithdrawals").textContent=
+withdrawals.filter(item=>item.status==="pending").length;
+
+$("sInvestments").textContent=
+investments.filter(item=>item.status==="active").length;
+
+$("sTickets").textContent=
+tickets.filter(item=>["open","pending"].includes(item.status)).length;
+
+$("sPhoneChanges").textContent=
+phoneChanges.filter(item=>item.status==="pending").length;
+
+$("sFraudAlerts").textContent=
+fraudAlerts.filter(item=>!item.is_resolved).length;
+
+rows(
+"usersBody",
+profiles.map(item=>`
+<tr>
+<td data-label="Nom">${esc(item.full_name)}</td>
+<td data-label="Email">${esc(item.email)}</td>
+<td data-label="Téléphone">${esc(item.phone)}</td>
+<td data-label="Solde">${money(item.balance)}</td>
+<td data-label="Inscription">${date(item.created_at)}</td>
+</tr>
+`).join(""),
+5
+);
+
+rows(
+"depositsBody",
+deposits.map(item=>`
+<tr>
+<td data-label="Utilisateur">${esc(name(item.user_id))}</td>
+<td data-label="Brut">${money(item.gross_amount)}</td>
+<td data-label="Frais">${money(item.fee_amount)}</td>
+<td data-label="Net">${money(item.net_amount)}</td>
+<td data-label="Méthode">${esc(item.payment_method||item.method)}</td>
+<td data-label="Numéro de transaction">${esc(item.payment_reference||"-")}</td>
+<td data-label="Preuve">
+${item.proof_path
+?`<button class="btn" data-proof-id="${esc(item.id)}">Voir la preuve</button>`
+:`<span class="status">Non demandé</span>`}
+</td>
+<td data-label="Statut">${status(item.status)}</td>
+<td data-label="Action">
+${item.status==="pending"
+?`<button class="btn" data-review="deposit" data-id="${esc(item.id)}">Traiter</button>`
+:"-"}
+</td>
+</tr>
+`).join(""),
+9
+);
+
+rows(
+"withdrawalsBody",
+withdrawals.map(item=>`
+<tr>
+<td data-label="Utilisateur">${esc(name(item.user_id))}</td>
+<td data-label="Brut">${money(item.gross_amount)}</td>
+<td data-label="Frais">${money(item.fee_amount)}</td>
+<td data-label="Net">${money(item.net_amount)}</td>
+<td data-label="Destination">${esc(item.destination_phone)}</td>
+<td data-label="Statut">${status(item.status)}</td>
+<td data-label="Action">
+${item.status==="pending"
+?`<button class="btn" data-review="withdrawal" data-id="${esc(item.id)}">Traiter</button>`
+:"-"}
+</td>
+</tr>
+`).join(""),
+7
+);
+
+rows(
+"investmentsBody",
+investments.map(item=>`
+<tr>
+<td data-label="Utilisateur">${esc(name(item.user_id))}</td>
+<td data-label="Pack">${esc(item.pack_name||item.pack_id)}</td>
+<td data-label="Montant">${money(item.amount)}</td>
+<td data-label="Gain/jour">${money(item.daily_income)}</td>
+<td data-label="Crédité">${money(item.total_credited)}</td>
+<td data-label="Statut">${status(item.status)}</td>
+</tr>
+`).join(""),
+6
+);
+
+rows(
+"supportBody",
+tickets.map(item=>{
+const content=hyqdParseSupportContent(item.message);
+const lastReply=hyqdParseSupportContent(item.admin_reply||"");
+return `
+<tr>
+<td data-label="Utilisateur">${esc(item.requester_name||name(item.user_id))}</td>
+<td data-label="Sujet">${esc(item.subject)}</td>
+<td data-label="Message"><div class="support-message-text">${esc(content.text)}</div>${supportFilesHtml(content.attachments)}
+${item.admin_reply ? `<div class="support-last-reply"><strong>Dernière réponse de l’assistance</strong>
+${item.replied_at ? `<small>${date(item.replied_at)}</small>` : ""}
+<p>${esc(lastReply.text)}</p>${supportFilesHtml(lastReply.attachments)}</div>` : '<small class="support-no-reply">Aucune réponse envoyée pour le moment.</small>'}</td>
+<td data-label="Statut">${status(item.status === "open" && item.taken_at ? "En cours" : ({open:"Reçu",answered:"Répondu",closed:"Clôturé"}[item.status] || item.status))}<br><small>Créé : ${date(item.created_at)}${item.taken_at ? `<br>Pris en charge : ${date(item.taken_at)}` : ""}${item.replied_at ? `<br>Réponse : ${date(item.replied_at)}` : ""}</small></td>
+<td data-label="Action">
+${item.status === "open" && !item.taken_at ? `<button class="btn" data-take-ticket="${esc(item.id)}">Prendre en charge</button>` : ""}
+<button class="btn reply" data-ticket="${esc(item.id)}">${item.admin_reply ? "Voir les réponses / Répondre" : "Ouvrir / Répondre"}</button>
+</td>
+</tr>`;
+}).join(""),
+5
+);
+
+rows(
+"referralRewardsBody",
+referralRewards.map(item=>`
+<tr>
+<td data-label="Parrain">${esc(item.sponsor_name||"Utilisateur")}</td>
+<td data-label="Filleul">${esc(item.referred_name||"Utilisateur")}</td>
+<td data-label="Premier dépôt">${money(item.deposit_amount)}</td>
+<td data-label="Taux">${esc(String(Number(item.reward_rate||0)*100))} %</td>
+<td data-label="Bonus versé">${money(item.reward_amount)}</td>
+<td data-label="Date">${date(item.created_at)}</td>
+</tr>
+`).join(""),
+6
+);
+
+rows(
+"phoneChangesBody",
+phoneChanges.map(item=>`
+<tr>
+<td data-label="Utilisateur">${esc(name(item.user_id))}</td>
+<td data-label="Ancien numéro">${esc(item.old_phone||"-")}</td>
+<td data-label="Nouveau numéro">${esc(item.new_phone||"-")}</td>
+<td data-label="Date">${date(item.created_at)}</td>
+<td data-label="Statut">${status(item.status)}</td>
+<td data-label="Note">${esc(item.admin_note||"-")}</td>
+<td data-label="Action">
+${item.status==="pending"
+?`<button class="btn" data-phone-review="${esc(item.id)}">Traiter</button>`
+:"-"}
+</td>
+</tr>
+`).join(""),
+7
+);
+
+rows(
+"auditLogsBody",
+auditLogs.map(item=>`
+<tr>
+<td data-label="Administrateur">${esc(item.admin_name||"Administrateur")}</td>
+<td data-label="Action">${esc(item.action||"-")}</td>
+<td data-label="Opération">${esc(item.entity_type||"-")}</td>
+<td data-label="Ancien statut">${esc(item.previous_status||"-")}</td>
+<td data-label="Nouveau statut">${esc(item.new_status||"-")}</td>
+<td data-label="Note">${esc(item.admin_note||"-")}</td>
+<td data-label="Date">${date(item.created_at)}</td>
+</tr>
+`).join(""),
+7
+);
+
+rows(
+"fraudAlertsBody",
+fraudAlerts.map(item=>`
+<tr>
+<td data-label="Utilisateur">${esc(item.user_name||"Utilisateur")}</td>
+<td data-label="Gravité"><span class="status ${esc(item.severity||"medium")}">${esc(item.severity||"medium")}</span></td>
+<td data-label="Type">${esc(item.alert_type||"-")}</td>
+<td data-label="Opération">${esc(item.entity_type||"-")}</td>
+<td data-label="Message">${esc(item.message||"-")}</td>
+<td data-label="Statut">${item.is_resolved?'<span class="status approved">Clôturée</span>':'<span class="status rejected">Active</span>'}</td>
+<td data-label="Date">${date(item.created_at)}</td>
+<td data-label="Action">${item.is_resolved?"-":`<button class="btn ok" data-resolve-alert="${esc(item.id)}">Clôturer</button>`}</td>
+</tr>
+`).join(""),
+8
+);
+
+bindTableButtons();
+}
+
+function bindTableButtons(){
+
+document.querySelectorAll("[data-review]").forEach(button=>{
+
+button.onclick=()=>{
+
+const list=
+button.dataset.review==="deposit"
+?deposits
+:withdrawals;
+
+review={
+type:button.dataset.review,
+item:list.find(
+operation=>
+String(operation.id)===button.dataset.id
+)
+};
+
+const isDeposit = review.type === "deposit";
+const transactionNumber = String(review.item?.payment_reference || "").trim();
+$("reviewInfo").textContent =
+`${isDeposit ? "Dépôt" : "Retrait"} : ${money(review.item?.gross_amount)}`;
+$("reviewProofStatus").style.display = isDeposit ? "block" : "none";
+if (isDeposit) {
+  $("reviewProofStatus").classList.toggle("proof-missing", !transactionNumber);
+  $("reviewProofStatus").innerHTML =
+    `<strong>Numéro de transaction Wave : ${esc(transactionNumber || "Non renseigné")}</strong>` +
+    `<p>Vérifiez dans votre compte marchand Wave que ce paiement est bien reçu, avec le même montant et le même numéro de transaction, avant de valider. Aucun reçu n’est obligatoire sur le site.</p>`;
+}
+$("approveReview").disabled = isDeposit && !transactionNumber;
+
+$("reviewNote").value="";
+
+openModal("reviewModal");
+};
+
+});
+
+document.querySelectorAll("[data-proof-id]").forEach(button=>{
+
+button.onclick=async()=>{
+
+const deposit=deposits.find(
+item=>String(item.id)===button.dataset.proofId
+);
+
+if(!deposit?.proof_path){
+toast("Aucune preuve disponible.");
+return;
+}
+
+$("proofImage").removeAttribute("src");
+$("proofImage").style.display="none";
+$("proofLoading").style.display="block";
+$("proofLoading").textContent="Chargement sécurisé...";
+
+openModal("proofModal");
+
+try{
+
+const {data,error}=await getHousingSupabaseClient()
+.storage
+.from("deposit-proofs")
+.createSignedUrl(deposit.proof_path,300);
+
+if(error||!data?.signedUrl){
+throw error||new Error("Lien de preuve indisponible.");
+}
+
+$("proofImage").src=data.signedUrl;
+$("proofImage").style.display="block";
+$("proofLoading").style.display="none";
+
+}catch(error){
+
+$("proofLoading").textContent=
+error?.message||"Impossible d'afficher la preuve.";
+
+}
+
+};
+
+});
+
+document.querySelectorAll("[data-support-path]").forEach(button=>{
+button.onclick=()=>openAdminSupportAttachment(button);
+});
+
+document.querySelectorAll("[data-take-ticket]").forEach(button=>{
+button.onclick=async()=>{
+if(button.disabled)return;
+button.disabled=true;
+try {
+const result=await adminTakeSupabaseSupportTicket(button.dataset.takeTicket);
+if(!result?.success)throw new Error(result?.message||"Prise en charge impossible.");
+toast(result.message); await loadAdminData();
+} catch(error) {toast(error?.message||"Prise en charge impossible.");}
+finally {button.disabled=false;}
+};
+});
+
+document.querySelectorAll("[data-ticket]").forEach(button=>{
+button.onclick=()=>openSupportTicketEditor(button.dataset.ticket);
+});
+
+document.querySelectorAll("[data-phone-review]").forEach(button=>{
+
+button.onclick=()=>{
+
+currentPhoneChange=phoneChanges.find(
+item=>String(item.id)===button.dataset.phoneReview
+);
+
+if(!currentPhoneChange){
+toast("Demande introuvable.");
+return;
+}
+
+$("phoneReviewInfo").innerHTML=`
+<strong>${esc(name(currentPhoneChange.user_id))}</strong>
+<p>${esc(currentPhoneChange.old_phone||"-")} → ${esc(currentPhoneChange.new_phone||"-")}</p>
+`;
+
+$("phoneReviewNote").value="";
+openModal("phoneReviewModal");
+};
+
+});
+
+document.querySelectorAll("[data-resolve-alert]").forEach(button=>{
+
+button.onclick=async()=>{
+
+button.disabled=true;
+
+const result=await adminResolveSupabaseFraudAlert(
+button.dataset.resolveAlert
+);
+
+if(!result?.success){
+toast(result?.message||"Clôture impossible.");
+button.disabled=false;
+return;
+}
+
+toast("Alerte clôturée.");
+await loadAdminData();
+};
+
+});
+  }
+  async function reviewOperation(approve){
+
+if(!review){
+return;
+}
+
+const parameters={
+approve,
+note:$("reviewNote").value
+};
+
+const result=
+review.type==="deposit"
+?await adminReviewSupabaseDeposit({
+...parameters,
+depositId:review.item.id
+})
+:await adminReviewSupabaseWithdrawal({
+...parameters,
+withdrawalId:review.item.id
+});
+
+if(!result.success){
+toast(result.message||"Échec de l'opération.");
+return;
+}
+
+closeModal("reviewModal");
+
+toast(
+approve
+?"Opération validée."
+:"Opération refusée."
+);
+
+await loadAdminData();
+}
+
+$("approveReview").onclick=
+()=>reviewOperation(true);
+
+$("rejectReview").onclick=
+()=>reviewOperation(false);
+
+$("ticketReplyAttachments").addEventListener("change",()=>{
+const files=Array.from($("ticketReplyAttachments").files||[]);
+if(files.length>HYQD_SUPPORT_MAX_FILES){
+toast(`Maximum ${HYQD_SUPPORT_MAX_FILES} fichiers.`);
+$("ticketReplyAttachments").value="";
+$("ticketReplyAttachmentsPreview").innerHTML="";
+return;
+}
+$("ticketReplyAttachmentsPreview").innerHTML=files.map(file=>`<div><i class="fa-solid fa-paperclip"></i> ${esc(file.name)} — ${supportFileSize(file.size)}</div>`).join("");
+});
+
+$("sendReply").onclick=async()=>{
+const sendButton=$("sendReply");
+if(!currentTicket || sendButton.disabled)return;
+const sentTicketId=currentTicket.id;
+const ownerUserId=currentTicket.user_id;
+const previousText=sendButton.textContent;
+sendButton.disabled=true;
+sendButton.textContent="Envoi...";
+let sent=false;
+let keepDisabled=false;
+try {
+const result=await adminReplySupabaseSupportTicket({ticketId:sentTicketId,
+reply:$("ticketReply").value,close:$("closeTicket").checked,
+files:$("ticketReplyAttachments").files,ownerUserId});
+if(!result?.success)throw new Error(result?.message||"Échec de l’envoi.");
+sent=true;
+toast("Réponse envoyée et enregistrée dans l’historique.");
+if(String(currentTicket?.id)===String(sentTicketId)) {
+$("ticketReply").value="";
+$("ticketReplyAttachments").value="";
+$("ticketReplyAttachmentsPreview").innerHTML="";
+}
+await loadAdminData();
+if(String(currentTicket?.id)===String(sentTicketId) && $("replyModal").classList.contains("show")) {
+await openSupportTicketEditor(sentTicketId);
+keepDisabled=sendButton.disabled;
+}
+if(currentStaffRole !== "support_agent") await loadSupportActivity(true);
+} catch(error){
+toast(sent
+? "Votre réponse a bien été envoyée. Actualisez les demandes pour l’afficher."
+: (error?.message||"Échec de l’envoi."));
+}
+finally {sendButton.disabled=keepDisabled;sendButton.textContent=previousText;}
+};
+
+async function reviewPhoneChange(approve){
+
+if(!currentPhoneChange){
+return;
+}
+
+const approveButton=$("approvePhoneChange");
+const rejectButton=$("rejectPhoneChange");
+
+approveButton.disabled=true;
+rejectButton.disabled=true;
+
+try{
+
+const result=await adminReviewSupabasePhoneChange({
+requestId:currentPhoneChange.id,
+approve,
+note:$("phoneReviewNote").value
+});
+
+if(!result?.success){
+throw new Error(result?.message||"Traitement impossible.");
+}
+
+closeModal("phoneReviewModal");
+toast(
+approve
+?"Changement de numéro validé."
+:"Changement de numéro refusé."
+);
+
+currentPhoneChange=null;
+await loadAdminData();
+
+}catch(error){
+toast(error?.message||"Traitement impossible.");
+}finally{
+approveButton.disabled=false;
+rejectButton.disabled=false;
+}
+}
+
+$("approvePhoneChange").onclick=
+()=>reviewPhoneChange(true);
+
+$("rejectPhoneChange").onclick=
+()=>reviewPhoneChange(false);
+
+document
+.querySelectorAll("[data-close]")
+.forEach(button=>{
+
+button.onclick=
+()=>closeModal(button.dataset.close);
+
+});
+
+document
+.querySelectorAll("[data-page]")
+.forEach(button=>{
+
+button.onclick=()=>{
+if(currentStaffRole === "support_agent" && button.dataset.page !== "support") return;
+if(button.dataset.page === "supportActivity") loadSupportActivity(true);
+
+document
+.querySelectorAll("[data-page]")
+.forEach(item=>item.classList.remove("active"));
+
+document
+.querySelectorAll(".section")
+.forEach(section=>section.classList.remove("active"));
+
+button.classList.add("active");
+
+$(button.dataset.page)
+.classList.add("active");
+
+$("title").textContent=
+button.textContent.trim();
+
+$("side").classList.remove("show");
+};
+
+});
+
+document
+.querySelectorAll("[data-search]")
+.forEach(input=>{
+
+input.oninput=()=>{
+
+const query=
+input.value.toLowerCase();
+
+$(input.dataset.search+"Body")
+.querySelectorAll("tr")
+.forEach(row=>{
+
+row.style.display=
+row.textContent.toLowerCase().includes(query)
+?""
+:"none";
+
+});
+
+};
+
+});
+
+$("menu").onclick=
+()=>$("side").classList.toggle("show");
+
+$("refresh").onclick=
+()=>loadAdminData().catch(error=>toast(error.message));
+
+async function logout(){
+
+await logoutSupabaseUser();
+
+location.replace(
+"login.html?logout=1"
+);
+}
+
+$("logout").onclick=logout;
+$("logoutSide").onclick=logout;
+
+document.addEventListener(
+"DOMContentLoaded",
+async()=>{
+
+try{
+
+const admin=
+await requireSupabaseSupportStaff({ allowMfaSetup: true });
+
+if(!admin?.authorized){
+
+$("deniedText").textContent=
+admin?.reason==="not_authenticated"
+?"Connectez-vous avec votre compte administrateur."
+:"Votre compte ne possède pas de rôle administrateur ou agent d’assistance.";
+
+$("denied").style.display="flex";
+
+return;
+}
+
+currentStaffRole=admin.role;
+applyStaffInterface(admin.role);
+await hyqdEnsureAdminMfa();
+await hyqdConfirmAdminServerProtection(admin.role);
+
+const profileResult=
+await getSupabaseProfile(
+admin.user.id
+);
+
+$("adminName").textContent=
+profileResult.profile?.full_name||
+"Administrateur";
+
+$("adminEmail").textContent=
+admin.user.email||"";
+
+$("adminRole").textContent=
+admin.role === "support_agent" ? "AGENT D’ASSISTANCE" : (admin.role||"admin").toUpperCase();
+
+$("app").style.display="grid";
+
+await loadAdminData();
+if(currentStaffRole !== "support_agent") await initializeSupportActivity();
+
+}catch(error){
+
+$("deniedText").textContent=
+error.message||
+"Impossible de charger l'administration.";
+
+$("denied").style.display="flex";
+
+}finally{
+
+$("loading").style.display="none";
+
+}
+
+}
+);
+</script>
+
+</body>
+</html>
