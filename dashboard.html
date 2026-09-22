@@ -1,0 +1,3956 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Dashboard utilisateur Solaris Pro">
+
+<title>Mon espace | Solaris Pro</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+* {
+box-sizing: border-box;
+}
+
+:root {
+--primary: #16a34a;
+--primary-dark: #15803d;
+--secondary: #f59e0b;
+--dark: #052e16;
+--dark-soft: #14532d;
+--text: #334155;
+--muted: #64748b;
+--border: #e2e8f0;
+--bg: #f4f7fb;
+--card: #ffffff;
+--success: #059669;
+--danger: #dc2626;
+--warning: #d97706;
+}
+
+html {
+scroll-behavior: smooth;
+}
+
+body {
+margin: 0;
+min-height: 100vh;
+font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+background: var(--bg);
+color: var(--text);
+}
+
+button,
+input,
+textarea,
+select {
+font: inherit;
+}
+
+button {
+cursor: pointer;
+}
+
+a {
+text-decoration: none;
+}
+
+.app {
+min-height: 100vh;
+display: grid;
+grid-template-columns: 260px minmax(0, 1fr);
+}
+
+/* SIDEBAR */
+
+.sidebar {
+position: sticky;
+top: 0;
+height: 100vh;
+padding: 22px 16px;
+background: linear-gradient(165deg, #021a0e, #082f68 60%, #16a34a);
+color: white;
+overflow-y: auto;
+}
+
+.brand {
+display: flex;
+align-items: center;
+gap: 12px;
+padding: 7px 8px 25px;
+}
+
+.brand-logo {
+width: 47px;
+height: 47px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 15px;
+background: linear-gradient(135deg, #38bdf8, #16a34a);
+font-size: 20px;
+box-shadow: 0 15px 30px rgba(37, 99, 235, .3);
+}
+
+.brand-text strong {
+display: block;
+font-size: 18px;
+font-weight: 900;
+color: white;
+}
+
+.brand-text span {
+display: block;
+margin-top: 2px;
+font-size: 8px;
+letter-spacing: 1.3px;
+color: #94a3b8;
+font-weight: 800;
+}
+
+.user-mini {
+margin-bottom: 18px;
+padding: 13px;
+border-radius: 17px;
+background: rgba(255, 255, 255, .07);
+border: 1px solid rgba(255, 255, 255, .08);
+}
+
+.user-mini strong {
+display: block;
+font-size: 12px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.user-mini span {
+display: block;
+margin-top: 5px;
+font-size: 9px;
+color: #cbd5e1;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.menu {
+display: grid;
+gap: 6px;
+}
+
+.menu button {
+width: 100%;
+min-height: 44px;
+display: flex;
+align-items: center;
+gap: 11px;
+padding: 0 13px;
+border: 0;
+border-radius: 12px;
+color: #cbd5e1;
+background: transparent;
+font-size: 10px;
+font-weight: 800;
+text-align: left;
+}
+
+.menu button:hover,
+.menu button.active {
+color: white;
+background: rgba(255, 255, 255, .1);
+}
+
+.menu button i {
+width: 20px;
+text-align: center;
+}
+
+.logout-side {
+margin-top: 18px;
+width: 100%;
+min-height: 42px;
+border: 1px solid rgba(248, 113, 113, .25);
+border-radius: 12px;
+color: #fecaca;
+background: rgba(220, 38, 38, .08);
+font-size: 10px;
+font-weight: 900;
+}
+
+/* MAIN */
+
+.main {
+min-width: 0;
+}
+
+.topbar {
+position: sticky;
+top: 0;
+z-index: 50;
+min-height: 68px;
+padding: 12px 25px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 15px;
+background: rgba(255, 255, 255, .95);
+backdrop-filter: blur(14px);
+border-bottom: 1px solid var(--border);
+}
+
+.topbar-title h1 {
+margin: 0;
+font-size: 20px;
+color: var(--dark);
+}
+
+.topbar-title p {
+margin: 3px 0 0;
+font-size: 9px;
+color: var(--muted);
+}
+
+.top-actions {
+display: flex;
+align-items: center;
+gap: 9px;
+}
+
+.icon-button {
+position: relative;
+width: 42px;
+height: 42px;
+display: flex;
+align-items: center;
+justify-content: center;
+border: 1px solid var(--border);
+border-radius: 12px;
+color: var(--text);
+background: white;
+}
+
+.icon-button:hover {
+color: var(--primary);
+border-color: #bfdbfe;
+background: #eff6ff;
+}
+
+.badge {
+position: absolute;
+top: -5px;
+right: -5px;
+min-width: 18px;
+height: 18px;
+padding: 0 5px;
+display: none;
+align-items: center;
+justify-content: center;
+border-radius: 999px;
+color: white;
+background: var(--danger);
+font-size: 8px;
+font-weight: 900;
+}
+
+.badge.show {
+display: flex;
+}
+
+.mobile-menu {
+display: none;
+}
+
+.content {
+width: min(1450px, 100%);
+margin: 0 auto;
+padding: 25px;
+}
+
+/* HERO */
+
+.hero {
+position: relative;
+overflow: hidden;
+padding: 25px;
+border-radius: 24px;
+color: white;
+background:
+radial-gradient(circle at 80% 20%, rgba(56, 189, 248, .35), transparent 25%),
+linear-gradient(135deg, #021a0e, #166534);
+box-shadow: 0 20px 50px rgba(15, 23, 42, .12);
+}
+
+.hero::after {
+content: "";
+position: absolute;
+width: 280px;
+height: 280px;
+right: -90px;
+bottom: -150px;
+border-radius: 50%;
+background: rgba(255, 255, 255, .06);
+}
+
+.hero-content {
+position: relative;
+z-index: 2;
+}
+
+.hero small {
+display: inline-block;
+padding: 6px 10px;
+border-radius: 999px;
+background: rgba(255, 255, 255, .1);
+color: #bbf7d0;
+font-size: 8px;
+font-weight: 900;
+letter-spacing: 1px;
+}
+
+.hero h2 {
+margin: 13px 0 6px;
+font-size: clamp(25px, 4vw, 40px);
+}
+
+.hero p {
+max-width: 700px;
+margin: 0;
+color: #cbd5e1;
+font-size: 11px;
+line-height: 1.7;
+}
+
+.hero-actions {
+margin-top: 19px;
+display: flex;
+flex-wrap: wrap;
+gap: 9px;
+}
+
+.primary-btn,
+.secondary-btn {
+min-height: 42px;
+padding: 0 15px;
+border-radius: 11px;
+font-size: 9px;
+font-weight: 900;
+}
+
+.primary-btn {
+border: 0;
+color: white;
+background: linear-gradient(135deg, #16a34a, #f59e0b);
+}
+
+.secondary-btn {
+border: 1px solid rgba(255, 255, 255, .18);
+color: white;
+background: rgba(255, 255, 255, .08);
+}
+
+.telegram-community-link {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+max-width: 100%;
+padding: 12px 15px;
+text-align: center;
+text-decoration: none;
+}
+
+.telegram-community-link:hover {
+background: rgba(255, 255, 255, .16);
+}
+
+.telegram-community-link:focus-visible {
+outline: 3px solid #bbf7d0;
+outline-offset: 3px;
+}
+
+.hero .community-help {
+margin-top: 10px;
+}
+
+/* TICKER */
+
+.ticker {
+margin-top: 16px;
+padding: 11px 15px;
+display: flex;
+align-items: center;
+gap: 12px;
+overflow: hidden;
+border-radius: 14px;
+border: 1px solid #dbeafe;
+background: #eff6ff;
+}
+
+.ticker-label {
+flex: 0 0 auto;
+display: flex;
+align-items: center;
+gap: 7px;
+color: #15803d;
+font-size: 9px;
+font-weight: 900;
+}
+
+.ticker-content {
+min-width: 0;
+flex: 1;
+overflow: hidden;
+color: #334155;
+font-size: 9px;
+white-space: nowrap;
+text-overflow: ellipsis;
+}
+
+/* STATS */
+
+.stats-grid {
+margin-top: 18px;
+display: grid;
+grid-template-columns: repeat(5, minmax(0, 1fr));
+gap: 13px;
+}
+
+.stat {
+padding: 18px;
+border-radius: 18px;
+border: 1px solid var(--border);
+background: white;
+}
+
+.stat-top {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+}
+
+.stat-icon {
+width: 39px;
+height: 39px;
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 12px;
+color: #15803d;
+background: #eff6ff;
+}
+
+.stat span {
+display: block;
+margin-top: 14px;
+color: var(--muted);
+font-size: 9px;
+font-weight: 700;
+}
+
+.stat strong {
+display: block;
+margin-top: 5px;
+color: var(--dark);
+font-size: 19px;
+font-weight: 900;
+}
+
+/* SECTIONS */
+
+.section {
+margin-top: 23px;
+}
+
+.section-head {
+margin-bottom: 13px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 15px;
+}
+
+.section-head h3 {
+margin: 0;
+color: var(--dark);
+font-size: 18px;
+}
+
+.section-head p {
+margin: 4px 0 0;
+color: var(--muted);
+font-size: 9px;
+}
+
+.section-card {
+border: 1px solid var(--border);
+border-radius: 19px;
+background: white;
+overflow: hidden;
+}
+
+/* PACKS */
+
+.packs-grid {
+display: grid;
+grid-template-columns: repeat(4, minmax(0, 1fr));
+gap: 14px;
+}
+
+.pack {
+overflow: hidden;
+border-radius: 19px;
+border: 1px solid var(--border);
+background: white;
+transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.pack:hover {
+transform: translateY(-3px);
+box-shadow: 0 18px 45px rgba(15, 23, 42, .09);
+}
+
+.pack-image {
+height: 145px;
+position: relative;
+overflow: hidden;
+background: #dbeafe;
+}
+
+.pack-image img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.pack-badge {
+position: absolute;
+top: 10px;
+left: 10px;
+padding: 5px 8px;
+border-radius: 999px;
+color: white;
+background: rgba(15, 23, 42, .78);
+font-size: 7px;
+font-weight: 900;
+}
+
+.pack-body {
+padding: 15px;
+}
+
+.pack-body h4 {
+margin: 0;
+color: var(--dark);
+font-size: 14px;
+}
+
+.pack-amount {
+margin-top: 8px;
+color: var(--primary);
+font-size: 18px;
+font-weight: 900;
+}
+
+.pack-details {
+margin-top: 11px;
+display: grid;
+gap: 7px;
+}
+
+.pack-detail {
+display: flex;
+justify-content: space-between;
+gap: 10px;
+color: var(--muted);
+font-size: 8px;
+}
+
+.pack-detail strong {
+color: var(--dark);
+}
+
+.invest-btn {
+width: 100%;
+min-height: 39px;
+margin-top: 13px;
+border: 0;
+border-radius: 10px;
+color: white;
+background: linear-gradient(135deg, #16a34a, #0284c7);
+font-size: 9px;
+font-weight: 900;
+}
+
+/* TABLES */
+
+.table-wrap {
+overflow-x: auto;
+}
+
+table {
+width: 100%;
+border-collapse: collapse;
+min-width: 760px;
+}
+
+th,
+td {
+padding: 12px 14px;
+border-bottom: 1px solid #eef2f7;
+text-align: left;
+font-size: 9px;
+}
+
+th {
+color: #64748b;
+background: #f8fafc;
+font-weight: 900;
+}
+
+td {
+color: #334155;
+}
+
+.status {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+min-height: 25px;
+padding: 0 8px;
+border-radius: 999px;
+font-size: 7px;
+font-weight: 900;
+}
+
+.status.pending {
+color: #92400e;
+background: #fffbeb;
+}
+
+.status.approved,
+.status.active,
+.status.answered {
+color: #166534;
+background: #f0fdf4;
+}
+
+.status.rejected,
+.status.cancelled {
+color: #991b1b;
+background: #fef2f2;
+}
+
+.status.completed,
+.status.closed {
+color: #1e40af;
+background: #eff6ff;
+}
+
+.empty {
+padding: 32px 20px;
+text-align: center;
+color: #94a3b8;
+font-size: 10px;
+}
+
+/* REFERRAL */
+
+.referral-card {
+padding: 20px;
+display: grid;
+grid-template-columns: minmax(0, 1fr) auto;
+gap: 18px;
+align-items: center;
+background: linear-gradient(135deg, #eff6ff, #f8fafc);
+}
+
+.referral-card h4 {
+margin: 0;
+color: var(--dark);
+font-size: 15px;
+}
+
+.referral-card p {
+margin: 7px 0 0;
+color: var(--muted);
+font-size: 9px;
+line-height: 1.6;
+}
+
+.referral-code {
+margin-top: 13px;
+display: flex;
+gap: 7px;
+}
+
+.referral-code input {
+min-width: 0;
+flex: 1;
+min-height: 40px;
+padding: 0 11px;
+border: 1px solid var(--border);
+border-radius: 10px;
+background: white;
+color: #052e16;
+font-size: 10px;
+font-weight: 900;
+}
+
+/* PANELS */
+
+.two-grid {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: 14px;
+}
+
+.panel {
+padding: 18px;
+border: 1px solid var(--border);
+border-radius: 18px;
+background: white;
+}
+
+.panel h4 {
+margin: 0 0 14px;
+color: var(--dark);
+font-size: 14px;
+}
+
+.field {
+margin-bottom: 12px;
+}
+
+.field label {
+display: block;
+margin-bottom: 6px;
+color: #475569;
+font-size: 8px;
+font-weight: 900;
+}
+
+.field input,
+.field textarea,
+.field select {
+width: 100%;
+border: 1px solid var(--border);
+border-radius: 10px;
+outline: none;
+background: #f8fafc;
+color: var(--dark);
+font-size: 10px;
+}
+
+.field-hint {
+display: block;
+margin-top: 6px;
+color: var(--muted);
+font-size: 8px;
+line-height: 1.5;
+}
+
+.proof-preview {
+display: none;
+margin-top: 10px;
+padding: 10px;
+border: 1px solid var(--border);
+border-radius: 12px;
+background: #f8fafc;
+}
+
+.proof-preview.show {
+display: block;
+}
+
+.proof-preview img {
+display: block;
+width: 100%;
+max-height: 220px;
+object-fit: contain;
+border-radius: 8px;
+background: white;
+}
+
+.field input,
+.field select {
+min-height: 42px;
+padding: 0 11px;
+}
+
+.field textarea {
+min-height: 115px;
+padding: 11px;
+resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+border-color: #60a5fa;
+box-shadow: 0 0 0 3px rgba(37, 99, 235, .07);
+background: white;
+}
+
+.submit-btn {
+min-height: 40px;
+padding: 0 15px;
+border: 0;
+border-radius: 10px;
+color: white;
+background: var(--primary);
+font-size: 9px;
+font-weight: 900;
+}
+
+.submit-btn:disabled {
+opacity: .6;
+cursor: not-allowed;
+}
+
+/* NOTIFICATIONS */
+
+.notification-panel {
+position: fixed !important;
+z-index: 99999 !important;
+top: 76px !important;
+right: 20px !important;
+width: min(390px, calc(100vw - 30px)) !important;
+max-height: 72vh !important;
+display: none;
+visibility: visible !important;
+opacity: 1 !important;
+pointer-events: auto !important;
+overflow: hidden;
+border: 1px solid #e2e8f0;
+border-radius: 18px;
+background: white;
+box-shadow: 0 25px 80px rgba(15, 23, 42, .28);
+}
+
+.notification-panel.show {
+display: block !important;
+}
+
+.notification-head {
+padding: 14px 15px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+border-bottom: 1px solid var(--border);
+background: white;
+}
+
+.notification-head strong {
+color: var(--dark);
+font-size: 12px;
+}
+
+.notification-head button {
+border: 0;
+color: var(--primary);
+background: transparent;
+font-size: 8px;
+font-weight: 900;
+}
+
+.notification-list {
+max-height: 60vh;
+overflow-y: auto;
+background: white;
+}
+
+.notification-item {
+padding: 13px 15px;
+border-bottom: 1px solid #eef2f7;
+cursor: pointer;
+}
+
+.notification-item:hover {
+background: #f8fafc;
+}
+
+.notification-item.unread {
+background: #eff6ff;
+}
+
+.notification-item.unread:hover {
+background: #dbeafe;
+}
+
+.notification-item strong {
+display: block;
+color: var(--dark);
+font-size: 9px;
+}
+
+.notification-item p {
+margin: 5px 0 0;
+color: var(--muted);
+font-size: 8px;
+line-height: 1.5;
+}
+
+/* MODAL */
+
+.modal-overlay {
+position: fixed;
+z-index: 100000;
+inset: 0;
+display: none;
+align-items: center;
+justify-content: center;
+padding: 20px;
+background: rgba(2, 6, 23, .66);
+backdrop-filter: blur(7px);
+}
+
+.modal-overlay.show {
+display: flex;
+}
+
+.modal {
+width: min(480px, 100%);
+max-height: 90vh;
+overflow-y: auto;
+border-radius: 20px;
+background: white;
+box-shadow: 0 30px 90px rgba(0, 0, 0, .3);
+}
+
+.modal-head {
+padding: 17px 19px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 10px;
+border-bottom: 1px solid var(--border);
+}
+
+.modal-head h3 {
+margin: 0;
+color: var(--dark);
+font-size: 16px;
+}
+
+.modal-close {
+width: 35px;
+height: 35px;
+border: 0;
+border-radius: 9px;
+color: #64748b;
+background: #f1f5f9;
+}
+
+.modal-body {
+padding: 19px;
+}
+
+.fee-box {
+margin-bottom: 14px;
+padding: 12px;
+border-radius: 11px;
+background: #f8fafc;
+color: #64748b;
+font-size: 9px;
+line-height: 1.6;
+}
+
+/* TOAST */
+
+.toast-container {
+position: fixed;
+z-index: 200000;
+right: 18px;
+bottom: 18px;
+display: grid;
+gap: 9px;
+width: min(360px, calc(100vw - 30px));
+}
+
+.toast {
+padding: 13px 14px;
+border-radius: 13px;
+color: white;
+background: #052e16;
+box-shadow: 0 15px 45px rgba(15, 23, 42, .2);
+font-size: 9px;
+line-height: 1.5;
+}
+
+.toast.success {
+background: #047857;
+}
+
+.toast.error {
+background: #b91c1c;
+}
+
+.toast.info {
+background: #15803d;
+}
+
+/* LOADING */
+
+.loading-screen {
+position: fixed;
+z-index: 500000;
+inset: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+gap: 14px;
+color: white;
+background: linear-gradient(145deg, #021a0e, #166534);
+}
+
+.loading-spinner {
+width: 44px;
+height: 44px;
+border: 4px solid rgba(255, 255, 255, .2);
+border-top-color: white;
+border-radius: 50%;
+animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+to {
+transform: rotate(360deg);
+}
+}
+
+.loading-screen strong {
+font-size: 15px;
+}
+
+.loading-screen span {
+color: #cbd5e1;
+font-size: 9px;
+}
+
+.stat small { display: block; margin-top: 8px; color: var(--muted); font-size: 11px; }
+.withdrawal-summary { margin: 16px 0; padding: 16px; border: 1px solid #bfdbfe; border-radius: 12px; background: #eff6ff; }
+.withdrawal-summary h4 { margin: 0 0 12px; }
+.withdrawal-summary dl { margin: 0; }
+.withdrawal-summary dl > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 12px; padding: 8px 0; }
+.withdrawal-summary dd { margin: 0; font-weight: 700; }
+.withdrawal-summary .withdrawal-net { border-top: 1px solid #bfdbfe; margin-top: 6px; color: #166534; font-weight: 700; }
+.withdrawal-summary p { margin: 10px 0 0; font-size: 12px; }
+
+/* RESPONSIVE */
+
+@media (max-width: 1150px) {
+.stats-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.packs-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}
+
+@media (max-width: 850px) {
+.app {
+grid-template-columns: 1fr;
+}
+
+.sidebar {
+position: fixed;
+z-index: 90000;
+left: -280px;
+width: 260px;
+transition: left .25s ease;
+box-shadow: 20px 0 50px rgba(2, 6, 23, .25);
+}
+
+.sidebar.show {
+left: 0;
+}
+
+.mobile-menu {
+display: flex;
+}
+
+.content {
+padding: 18px;
+}
+
+.two-grid {
+grid-template-columns: 1fr;
+}
+
+.notification-panel {
+top: 68px !important;
+right: 10px !important;
+width: calc(100vw - 20px) !important;
+}
+}
+
+@media (max-width: 580px) {
+.topbar {
+padding: 10px 13px;
+}
+
+.topbar-title h1 {
+font-size: 15px;
+}
+
+.content {
+padding: 13px;
+}
+
+.hero {
+padding: 20px;
+}
+
+.stats-grid {
+grid-template-columns: 1fr 1fr;
+gap: 9px;
+}
+
+.stat {
+padding: 13px;
+}
+
+.stat strong {
+font-size: 14px;
+}
+
+.packs-grid {
+grid-template-columns: 1fr;
+}
+
+.referral-card {
+grid-template-columns: 1fr;
+}
+}
+
+
+
+/* Assistance avec pièces jointes */
+.support-file-picker{margin-top:12px;padding:12px;border:1px dashed #93c5fd;border-radius:12px;background:#eff6ff}
+.support-file-picker input[type="file"]{display:block;width:100%;margin-top:8px;font-size:11px}
+.support-file-hint{margin-top:7px;color:#64748b;font-size:9px;line-height:1.45}
+.support-file-preview{display:grid;gap:6px;margin-top:8px}
+.support-file-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:#fff;border:1px solid #dbeafe;font-size:9px;color:#334155}
+.support-file-item i{color:#16a34a}
+.support-attachments{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.support-attachment-btn{display:inline-flex;align-items:center;gap:6px;border:1px solid #bfdbfe;border-radius:9px;padding:7px 9px;background:#fff;color:#15803d;font-size:8px;font-weight:800}
+.support-attachment-btn:hover{background:#eff6ff}
+.support-attachment-btn:disabled{opacity:.6;cursor:wait}
+
+.hyqd-wave-payment{padding:18px;margin:16px 0 24px;border:1px solid #bbf7d0;border-radius:16px;background:#f0fdf4;color:#14532d}
+.hyqd-wave-payment p{font-size:14px;line-height:1.6;margin:12px 0}
+.hyqd-wave-payment .submit-btn{display:block;text-align:center;text-decoration:none}
+.hyqd-wave-payment summary{cursor:pointer;padding:10px 0;font-weight:700}
+.hyqd-wave-payment a:focus-visible{outline:3px solid #14532d;outline-offset:4px}
+#depositForm h4{margin:18px 0 14px}
+
+.operations-export { background: #fff; border: 1px solid #dbe3ef; border-radius: 16px; padding: 18px; margin: 16px 0; color: #052e16; }
+.operations-export h4 { margin: 0 0 8px; font-size: 16px; }
+.operations-export p { font-size: 13px; line-height: 1.5; margin: 8px 0; color: #475569; }
+.export-fields { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-top: 14px; }
+.export-fields label { display: grid; gap: 6px; flex: 1 1 150px; font-size: 13px; min-width: 0; }
+.export-fields input, .export-fields select { width: 100%; min-width: 0; box-sizing: border-box; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: white; color: #052e16; font: inherit; }
+.export-fields button { background: #16a34a; color: #fff; border: 0; border-radius: 10px; padding: 12px 16px; cursor: pointer; font-weight: 700; }
+.export-fields button:disabled { opacity: .6; cursor: wait; }
+
+.support-ticket-card { padding: 16px 0; border-bottom: 1px solid #e2e8f0; scroll-margin-top: 100px; }
+.support-ticket-card:focus { outline: 2px solid #16a34a; outline-offset: 4px; }
+.support-ticket-heading { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; align-items: center; font-size: 14px; }
+.support-ticket-date { color: #64748b; font-size: 12px; line-height: 1.6; margin: 8px 0; }
+.support-ticket-text { color: #334155; font-size: 14px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.support-ticket-reply { margin-top: 12px; padding: 14px; border-radius: 12px; background: #eff6ff; color: #1e3a8a; font-size: 14px; line-height: 1.6; }
+.ticker-content { text-overflow: clip; min-height: 24px; display: flex; align-items: center; font-size: 13px; }
+.ticker-label { font-size: 12px; }
+.ticker-line { display: inline-block; flex: 0 0 auto; white-space: nowrap; }
+.ticker-line-running { animation: hyqd-ticker-scroll var(--ticker-duration, 15s) linear 1 both; }
+#withdrawalNoticeTicker .ticker-line-running { animation-iteration-count: infinite; }
+.ticker-paused .ticker-line-running { animation-play-state: paused; }
+.withdrawal-notice { background: #fff7ed; border-color: #fed7aa; }
+.withdrawal-notice .ticker-label { color: #9a3412; }
+.ticker-controls { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+.ticker-controls button { background: #fff; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 7px 10px; font-size: 12px; cursor: pointer; }
+.ticker-controls button:disabled { opacity: .6; cursor: wait; }
+@keyframes hyqd-ticker-scroll { from { transform: translateX(var(--ticker-start, 100%)); } to { transform: translateX(var(--ticker-end, -100%)); } }
+@media (max-width: 480px) { .ticker { padding: 10px; gap: 8px; } .ticker-label { font-size: 11px; } }
+@media (prefers-reduced-motion: reduce) {
+.ticker-line-running { animation: none; transform: none; white-space: normal; }
+.ticker-content { overflow: visible; white-space: normal; }
+.ticker-line { flex: 1; white-space: normal; }
+#pauseTickers { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="loadingScreen" class="loading-screen">
+<div class="loading-spinner"></div>
+<strong>Solaris Pro</strong>
+<span>Chargement de votre espace sécurisé...</span>
+</div>
+</div>
+
+<div class="app">
+
+<aside id="sidebar" class="sidebar">
+
+<a href="index.html" class="brand">
+<div class="brand-logo">
+<i class="fa-solid fa-solar-panel"></i>
+</div>
+
+<div class="brand-text">
+<strong>Solaris Pro</strong>
+<span>ESPACE UTILISATEUR</span>
+</div>
+</a>
+
+<div class="user-mini">
+<strong id="sidebarName">Utilisateur</strong>
+<span id="sidebarEmail">...</span>
+</div>
+
+<nav class="menu">
+
+<button class="active" data-scroll="homeSection" type="button">
+<i class="fa-solid fa-house"></i>
+Accueil
+</button>
+
+<button data-scroll="packsSection" type="button">
+<i class="fa-solid fa-solar-panel"></i>
+Packs
+</button>
+
+<button data-scroll="investmentsSection" type="button">
+<i class="fa-solid fa-chart-line"></i>
+Mes investissements
+</button>
+
+<button data-scroll="historySection" type="button">
+<i class="fa-solid fa-clock-rotate-left"></i>
+Historique
+</button>
+
+<button data-scroll="referralSection" type="button">
+<i class="fa-solid fa-user-group"></i>
+Parrainage
+</button>
+
+<button data-scroll="supportSection" type="button">
+<i class="fa-solid fa-headset"></i>
+Assistance
+</button>
+
+<button data-scroll="profileSection" type="button">
+<i class="fa-solid fa-user"></i>
+Profil
+</button>
+
+</nav>
+
+<button id="logoutSideButton" class="logout-side" type="button">
+<i class="fa-solid fa-right-from-bracket"></i>
+Déconnexion
+</button>
+
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+
+<div class="top-actions">
+
+<button id="mobileMenuButton" class="icon-button mobile-menu" type="button">
+<i class="fa-solid fa-bars"></i>
+</button>
+
+<div class="topbar-title">
+<h1>Tableau de bord</h1>
+<p id="welcomeText">Bienvenue dans votre espace</p>
+</div>
+
+</div>
+
+<div class="top-actions">
+
+<button id="notificationButton" class="icon-button" type="button" aria-label="Notifications">
+<i class="fa-regular fa-bell"></i>
+<span id="notificationBadge" class="badge">0</span>
+</button>
+
+<button id="logoutButton" class="icon-button" type="button" title="Déconnexion">
+<i class="fa-solid fa-right-from-bracket"></i>
+</button>
+
+</div>
+
+</header>
+
+<div class="content">
+
+<section id="homeSection">
+
+<div class="hero">
+<div class="hero-content">
+
+<small>
+<i class="fa-solid fa-shield-halved"></i>
+COMPTE CONNECTÉ À SUPABASE
+</small>
+
+<h2 id="heroName">Bienvenue</h2>
+
+<p>
+Consultez votre solde, vos opérations, vos investissements,
+votre assistance et votre parrainage depuis un seul espace.
+</p>
+
+<div class="hero-actions">
+
+<button id="openDepositButton" class="primary-btn" type="button">
+<i class="fa-solid fa-arrow-down"></i>
+Déposer
+</button>
+
+<button id="openWithdrawalButton" class="secondary-btn" type="button">
+<i class="fa-solid fa-arrow-up"></i>
+Retirer
+</button>
+
+<a id="telegramCommunityLink" class="secondary-btn telegram-community-link"
+href="https://t.me/+cE0CnVuzVr84OWM0" target="_blank" rel="noopener noreferrer">
+<i class="fa-brands fa-telegram" aria-hidden="true"></i>
+Rejoindre la communauté Telegram
+</a>
+
+</div>
+<p class="community-help">Échangez avec les autres membres. Dans Telegram, appuyez sur « Rejoindre » pour intégrer le groupe. Pour une demande personnelle, utilisez l’assistance.</p>
+</div>
+</div>
+
+<section id="dashboardTickers" aria-label="Dépôts validés et information sur les retraits">
+<div class="ticker">
+<div class="ticker-label"><i class="fa-solid fa-bolt" aria-hidden="true"></i> Dépôts validés</div>
+<div id="depositTicker" class="ticker-content" role="region" aria-label="Dépôts avec numéros partiellement masqués">Chargement…</div>
+</div>
+<div class="ticker withdrawal-notice">
+<div class="ticker-label"><i class="fa-solid fa-clock" aria-hidden="true"></i> Retraits</div>
+<div id="withdrawalNoticeTicker" class="ticker-content" role="note"></div>
+</div>
+<div class="ticker-controls">
+<button id="pauseTickers" type="button" aria-pressed="false" aria-label="Mettre en pause ou reprendre les défilements">Pause</button>
+<button id="nextDepositTicker" type="button">Dépôt suivant</button>
+</div>
+</section>
+
+<div class="stats-grid">
+
+<article class="stat">
+<div class="stat-top">
+<div class="stat-icon">
+<i class="fa-solid fa-wallet"></i>
+</div>
+</div>
+<span>Solde disponible</span>
+<strong id="balanceValue">0 FCFA</strong>
+</article>
+
+<article class="stat">
+<div class="stat-top">
+<div class="stat-icon">
+<i class="fa-solid fa-arrow-down"></i>
+</div>
+</div>
+<span>Total déposé</span>
+<strong id="totalDepositedValue">0 FCFA</strong>
+</article>
+
+<article class="stat">
+<div class="stat-top">
+<div class="stat-icon">
+<i class="fa-solid fa-solar-panel"></i>
+</div>
+</div>
+<span>Total investi</span>
+<strong id="totalInvestedValue">0 FCFA</strong>
+</article>
+
+<article class="stat">
+<div class="stat-top">
+<div class="stat-icon"><i class="fa-solid fa-arrow-up"></i></div>
+</div>
+<span>Total retrait</span>
+<strong id="totalWithdrawnValue">—</strong>
+<small>Montants bruts en attente et validés</small>
+</article>
+
+<article class="stat">
+<div class="stat-top">
+<div class="stat-icon">
+<i class="fa-solid fa-gift"></i>
+</div>
+</div>
+<span>Bonus de parrainage</span>
+<strong id="referralBonusValue">0 FCFA</strong>
+</article>
+
+</div>
+</section>
+
+<section id="packsSection" class="section">
+
+<div class="section-head">
+<div>
+<h3>Packs d'investissement</h3>
+<p>Consultez les paramètres de chaque pack avant toute opération.</p>
+</div>
+</div>
+
+<div id="packsGrid" class="packs-grid"></div>
+
+</section>
+
+<section id="investmentsSection" class="section">
+
+<div class="section-head">
+<div>
+<h3>Mes investissements</h3>
+<p>Suivi des investissements enregistrés sur votre compte.</p>
+</div>
+</div>
+
+<div class="section-card table-wrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Pack</th>
+<th>Montant</th>
+<th>Gain journalier</th>
+<th>Jours crédités</th>
+<th>Total crédité</th>
+<th>Statut</th>
+</tr>
+</thead>
+
+<tbody id="investmentsTableBody">
+<tr>
+<td colspan="6" class="empty">
+Chargement...
+</td>
+</tr>
+</tbody>
+
+</table>
+
+</div>
+</section>
+
+<section id="historySection" class="section">
+
+<div class="section-head">
+<div>
+<h3>Historique financier</h3>
+<p>Dépôts et retraits enregistrés dans Supabase.</p>
+</div>
+</div>
+<form class="operations-export" data-operations-export="client">
+<h4>Exporter mes opérations</h4>
+<p>Fichier CSV compatible avec Excel. Vos opérations uniquement, tous les statuts. Laissez les dates vides pour exporter tout l’historique.</p>
+<div class="export-fields">
+<label>Opérations<select name="operationType"><option value="all">Dépôts et retraits</option><option value="deposits">Dépôts</option><option value="withdrawals">Retraits</option></select></label>
+<label>Du<input type="date" name="startDate"></label>
+<label>Au (inclus)<input type="date" name="endDate"></label>
+<button type="submit">Télécharger le CSV</button>
+</div>
+<p>Montants en FCFA. Dates en UTC (heure de Côte d’Ivoire). Les recherches dans les tableaux ne limitent pas cet export.</p>
+<p role="status" aria-live="polite"></p>
+</form>
+
+
+<div class="section-card table-wrap">
+
+<table>
+
+<thead>
+<tr>
+<th>Type</th>
+<th>Montant brut</th>
+<th>Frais</th>
+<th>Montant net</th>
+<th>Statut</th>
+<th>Date</th>
+</tr>
+</thead>
+
+<tbody id="historyTableBody">
+<tr>
+<td colspan="6" class="empty">
+Chargement...
+</td>
+</tr>
+</tbody>
+
+</table>
+
+</div>
+</section>
+
+<section id="referralSection" class="section">
+
+<div class="section-head">
+<div>
+<h3>Parrainage</h3>
+<p>
+Votre bonus est traité côté serveur lors du premier dépôt validé du filleul.
+</p>
+</div>
+</div>
+
+<div class="section-card referral-card">
+
+<div>
+
+<h4>Invitez vos proches</h4>
+
+<p>Partagez votre code ou votre lien personnel.</p>
+
+<div class="referral-code">
+<input id="referralCodeInput" type="text" readonly>
+
+<button id="copyReferralCode" class="submit-btn" type="button">
+Copier
+</button>
+</div>
+
+<div class="referral-code">
+<input id="referralLinkInput" type="text" readonly>
+
+<button id="copyReferralLink" class="submit-btn" type="button">
+Copier le lien
+</button>
+</div>
+
+</div>
+
+<div>
+<div class="stat">
+<span>Bonus cumulés</span>
+<strong id="referralTotalCard">0 FCFA</strong>
+</div>
+</div>
+
+</div>
+
+<div class="section-card table-wrap">
+<h4>Historique des bonus reçus</h4>
+<table>
+<thead>
+<tr>
+<th>Filleul</th>
+<th>Premier dépôt</th>
+<th>Taux</th>
+<th>Bonus reçu</th>
+<th>Date</th>
+</tr>
+</thead>
+<tbody id="referralRewardsTableBody">
+<tr><td colspan="5" class="empty">Chargement...</td></tr>
+</tbody>
+</table>
+</div>
+
+</section>
+
+<section id="supportSection" class="section">
+
+<button id="refreshSupportButton" type="button" class="primary-btn">Actualiser mes demandes</button>
+<p class="support-ticket-date">Les demandes et notifications s’actualisent toutes les 30 secondes lorsque cette page est visible.</p>
+<div class="section-head">
+<div>
+<h3>Assistance</h3>
+<p>Envoyez une demande et consultez les réponses.</p>
+</div>
+</div>
+
+<div class="two-grid">
+
+<div class="panel">
+
+<h4>Nouveau ticket</h4>
+
+<form id="supportForm">
+
+<div class="field">
+<label for="supportSubject">Sujet</label>
+<input id="supportSubject" type="text" maxlength="160" required>
+</div>
+
+<div class="field">
+<label for="supportMessage">Message</label>
+<textarea id="supportMessage" maxlength="3500" required></textarea>
+</div>
+
+<div class="support-file-picker">
+<label for="supportAttachments"><strong><i class="fa-solid fa-paperclip"></i> Pièces jointes</strong></label>
+<input id="supportAttachments" type="file" multiple accept="image/*,video/*,.pdf,.txt,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip">
+<div class="support-file-hint">Jusqu’à 3 fichiers, 20 Mo maximum par fichier : photos, vidéos, PDF et documents courants.</div>
+<div id="supportAttachmentsPreview" class="support-file-preview"></div>
+</div>
+
+<button id="supportSubmitButton" type="submit" class="submit-btn">
+Envoyer
+</button>
+
+</form>
+</div>
+
+<div class="panel">
+
+<h4>Mes demandes</h4>
+
+<div id="supportTicketsList">
+<div class="empty">Chargement...</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section id="profileSection" class="section">
+
+<div class="section-head">
+<div>
+<h3>Profil</h3>
+<p>Modifiez votre nom ou demandez un changement sécurisé de numéro.</p>
+</div>
+</div>
+
+<div class="panel">
+
+<form id="profileForm">
+
+<div class="two-grid">
+
+<div class="field">
+<label for="profileName">Nom complet</label>
+<input id="profileName" type="text" required>
+</div>
+
+<div class="field">
+<label for="profilePhone">Numéro actuel</label>
+<input id="profilePhone" type="text" readonly>
+</div>
+
+</div>
+
+<div class="field">
+<label for="profileEmail">Adresse email</label>
+<input id="profileEmail" type="email" readonly>
+</div>
+
+<button id="profileSubmitButton" type="submit" class="submit-btn">
+Enregistrer les modifications
+</button>
+
+</form>
+</div>
+
+<div class="panel">
+<h4>Changer mon numéro de téléphone</h4>
+<p class="muted">Le nouveau numéro sera appliqué uniquement après validation par l’administrateur.</p>
+
+<form id="phoneChangeForm">
+<div class="two-grid">
+<div class="field">
+<label for="newProfilePhoneCountry">Pays</label>
+<select id="newProfilePhoneCountry" required>
+<option value="225" selected>🇨🇮 Côte d’Ivoire (+225)</option>
+<option value="226">🇧🇫 Burkina Faso (+226)</option>
+<option value="223">🇲🇱 Mali (+223)</option>
+</select>
+</div>
+
+<div class="field">
+<label for="newProfilePhone">Nouveau numéro</label>
+<input id="newProfilePhone" type="tel" inputmode="numeric" placeholder="0700000000" required>
+<small id="newProfilePhoneHint" class="field-hint">Entrez les 10 chiffres du numéro ivoirien, sans +225.</small>
+</div>
+</div>
+
+<button id="phoneChangeSubmitButton" type="submit" class="submit-btn">
+Envoyer la demande
+</button>
+</form>
+
+<h4>Mes demandes de changement</h4>
+<div id="phoneChangeRequestsList">
+<div class="empty">Chargement...</div>
+</div>
+</div>
+</section>
+
+</div>
+</main>
+</div>
+
+<!-- NOTIFICATIONS -->
+
+<div id="notificationPanel" class="notification-panel" aria-hidden="true">
+
+<div class="notification-head">
+<strong>Notifications</strong>
+
+<button id="markAllNotificationsButton" type="button">
+Tout lire
+</button>
+</div>
+
+<div id="notificationList" class="notification-list">
+<div class="empty">Chargement...</div>
+</div>
+
+</div>
+
+<!-- MODAL DÉPÔT -->
+
+<div id="depositModal" class="modal-overlay">
+
+<div class="modal">
+
+<div class="modal-head">
+
+<h3>Effectuer un dépôt</h3>
+
+<button class="modal-close" data-close-modal="depositModal" type="button">
+<i class="fa-solid fa-xmark"></i>
+</button>
+
+</div>
+
+<div class="modal-body">
+
+<div class="fee-box">
+Dépôts par Wave uniquement. Aucun frais de dépôt.
+Le solde est crédité après vérification du paiement et validation par l’administrateur.
+</div>
+<form id="depositForm">
+<h4>1. Saisissez le montant et vérifiez les frais</h4>
+<div class="field">
+<label for="depositAmount">Montant à déposer (FCFA)</label>
+<input id="depositAmount" type="number" min="500" max="1000000000" step="1" placeholder="Ex : 500" required>
+<small class="field-hint">Minimum : 500 FCFA. Saisissez le montant réellement payé.</small>
+</div>
+<div class="withdrawal-summary" aria-live="polite" aria-atomic="true">
+<h4>Récapitulatif du dépôt</h4>
+<dl>
+<div><dt>Montant à payer sur Wave</dt><dd id="depositGrossPreview">—</dd></div>
+<div><dt>Frais de dépôt (0 %)</dt><dd id="depositFeePreview">—</dd></div>
+<div class="withdrawal-net"><dt>Montant net crédité</dt><dd id="depositNetPreview">—</dd></div>
+</dl>
+<p id="depositPreviewHint">Saisissez un montant entier d’au moins 500 FCFA.</p>
+</div>
+<input id="depositMethod" type="hidden" value="Wave">
+<h4>2. Effectuez le paiement sur Wave</h4>
+<div class="hyqd-wave-payment">
+<a id="openWavePayment" class="submit-btn" href="https://pay.wave.com/m/M_ci_ueZkMJQ0gJY-/c/ci/?src=d" target="_blank" rel="noopener noreferrer">Continuer vers Wave</a>
+<p id="waveAmountHint" aria-live="polite">Indiquez le montant ci-dessus, puis ouvrez Wave.</p>
+<p>Dans Wave, vérifiez le bénéficiaire <strong>Solaris Pro</strong>, saisissez le même montant et confirmez le paiement. Revenez ensuite sur cette page.</p>
+<details>
+<summary>Ou scanner le QR marchand avec Wave</summary>
+<img src="./wave-qr.jpg" alt="QR marchand Wave de Solaris Pro" style="display:block;width:100%;max-width:280px;height:auto;margin:14px auto">
+<a href="./wave-qr.jpg" target="_blank" rel="noopener noreferrer">Ouvrir le QR en grand</a>
+<p>Le QR ouvre le même paiement. Saisissez également le montant dans Wave.</p>
+</details>
+</div>
+<h4>3. Revenez ici et saisissez le numéro de transaction</h4>
+<div class="field">
+<label for="depositReference">Numéro de transaction Wave</label>
+<input id="depositReference" type="text" maxlength="200" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Numéro indiqué sur votre paiement Wave" required>
+<small class="field-hint">Ce n’est pas votre numéro de téléphone. Ne réutilisez pas le numéro d’un ancien paiement.</small>
+</div>
+<p class="field-hint">Aucun reçu à joindre ici. Conservez-le : l’assistance pourra vous le demander en privé en cas de problème.</p>
+<p class="field-hint"><strong>4. Envoyez la demande.</strong> Après vérification du paiement, l’administrateur validera le dépôt et le montant net sera ajouté à votre solde.</p>
+<button id="depositSubmitButton" class="submit-btn" type="submit">Envoyer ma demande de dépôt</button>
+<p class="field-hint">L’ouverture de Wave ne confirme pas le paiement. Votre demande restera en attente jusqu’à la vérification de l’administrateur.</p>
+<small class="field-hint">Version : DEPOT-DETAIL-03</small>
+</form>
+</div>
+</div>
+</div>
+
+<!-- MODAL RETRAIT -->
+
+<div id="withdrawalModal" class="modal-overlay">
+
+<div class="modal">
+
+<div class="modal-head">
+
+<h3>Demander un retrait</h3>
+
+<button class="modal-close" data-close-modal="withdrawalModal" type="button">
+<i class="fa-solid fa-xmark"></i>
+</button>
+
+</div>
+
+<div class="modal-body">
+
+<div class="fee-box">
+Aucun frais de retrait.
+Le montant brut est réservé dès la demande.
+</div>
+
+<form id="withdrawalForm">
+
+<div class="field">
+<label for="withdrawalAmount">Montant brut à retirer</label>
+
+<input
+id="withdrawalAmount"
+type="number"
+min="1000"
+step="1"
+placeholder="Ex : 10000"
+required
+>
+</div>
+
+<div class="field">
+
+<label for="withdrawalMethod">Moyen de retrait</label>
+
+<select id="withdrawalMethod" required>
+<option value="Wave" selected>Wave</option>
+</select>
+
+</div>
+
+<div class="two-grid">
+<div class="field">
+<label for="withdrawalPhoneCountry">Pays du numéro</label>
+<select id="withdrawalPhoneCountry" required>
+<option value="225" selected>🇨🇮 Côte d’Ivoire (+225)</option>
+<option value="226">🇧🇫 Burkina Faso (+226)</option>
+<option value="223">🇲🇱 Mali (+223)</option>
+</select>
+</div>
+
+<div class="field">
+<label for="withdrawalPhone">Numéro de destination</label>
+<input
+id="withdrawalPhone"
+type="tel"
+inputmode="numeric"
+placeholder="0700000000"
+required
+>
+<small id="withdrawalPhoneHint" class="field-hint">Entrez les 10 chiffres du numéro ivoirien, sans +225.</small>
+</div>
+</div>
+
+<div class="withdrawal-summary" aria-live="polite" aria-atomic="true">
+<h4>Récapitulatif du retrait</h4>
+<dl>
+<div><dt>Montant demandé</dt><dd id="withdrawalGrossPreview">—</dd></div>
+<div><dt>Frais prélevés (0 %)</dt><dd id="withdrawalFeePreview">—</dd></div>
+<div class="withdrawal-net"><dt>Montant net à recevoir</dt><dd id="withdrawalNetPreview">—</dd></div>
+</dl>
+<p id="withdrawalPreviewHint">Saisissez un montant entier d’au moins 1 000 FCFA.</p>
+</div>
+
+<button id="withdrawalSubmitButton" class="submit-btn" type="submit">
+Envoyer la demande
+</button>
+
+</form>
+</div>
+</div>
+</div>
+
+<!-- MODAL INVESTISSEMENT -->
+
+<div id="investmentModal" class="modal-overlay">
+
+<div class="modal">
+
+<div class="modal-head">
+
+<h3>Confirmer l'investissement</h3>
+
+<button class="modal-close" data-close-modal="investmentModal" type="button">
+<i class="fa-solid fa-xmark"></i>
+</button>
+
+</div>
+
+<div class="modal-body">
+
+<div id="investmentConfirmationText" class="fee-box"></div>
+
+<button id="confirmInvestmentButton" class="submit-btn" type="button">
+Confirmer l'investissement
+</button>
+
+</div>
+</div>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js?v=20260916-assistance-depot-v1"></script>
+<script src="operations-export.js?v=20260915-csv-v1"></script>
+
+<script>
+"use strict";
+
+let currentUser = null;
+let currentProfile = null;
+let currentPacks = [];
+let selectedPack = null;
+
+
+/* FORMAT */
+
+function formatMoney(value) {
+
+return new Intl.NumberFormat(
+"fr-FR"
+).format(
+Number(value || 0)
+) + " FCFA";
+
+}
+
+
+function formatDate(value) {
+
+if (!value) {
+return "-";
+}
+
+try {
+
+return new Intl.DateTimeFormat(
+"fr-FR",
+{
+dateStyle: "short",
+timeStyle: "short"
+}
+).format(
+new Date(value)
+);
+
+} catch {
+
+return "-";
+
+}
+
+}
+
+
+function escapeHtml(value) {
+
+return String(value ?? "")
+.replaceAll("&", "&amp;")
+.replaceAll("<", "&lt;")
+.replaceAll(">", "&gt;")
+.replaceAll('"', "&quot;")
+.replaceAll("'", "&#039;");
+
+}
+
+
+/* TOAST */
+
+function showToast(
+message,
+type = "info"
+) {
+
+const container =
+document.getElementById(
+"toastContainer"
+);
+
+const toast =
+document.createElement(
+"div"
+);
+
+toast.className =
+"toast " + type;
+
+toast.textContent =
+message;
+
+container.appendChild(toast);
+
+window.setTimeout(
+() => {
+toast.remove();
+},
+4200
+);
+
+}
+
+
+/* MODALES */
+
+function openModal(id) {
+
+document
+.getElementById(id)
+?.classList
+.add("show");
+
+}
+
+
+function closeModal(id) {
+
+document
+.getElementById(id)
+?.classList
+.remove("show");
+
+}
+
+
+document
+.querySelectorAll("[data-close-modal]")
+.forEach(
+button => {
+
+button.addEventListener(
+"click",
+() => {
+
+closeModal(
+button.dataset.closeModal
+);
+
+}
+);
+
+}
+);
+
+
+document
+.querySelectorAll(".modal-overlay")
+.forEach(
+overlay => {
+
+overlay.addEventListener(
+"click",
+event => {
+
+if (event.target === overlay) {
+overlay.classList.remove("show");
+}
+
+}
+);
+
+}
+);
+
+
+/* NAVIGATION */
+
+document
+.querySelectorAll("[data-scroll]")
+.forEach(
+button => {
+
+button.addEventListener(
+"click",
+() => {
+
+const id =
+button.dataset.scroll;
+
+document
+.getElementById(id)
+?.scrollIntoView({
+behavior: "smooth"
+});
+
+document
+.querySelectorAll(".menu button")
+.forEach(
+item => {
+item.classList.remove("active");
+}
+);
+
+button.classList.add("active");
+
+document
+.getElementById("sidebar")
+.classList
+.remove("show");
+
+}
+);
+
+}
+);
+
+
+document
+.getElementById("mobileMenuButton")
+.addEventListener(
+"click",
+event => {
+
+event.stopPropagation();
+
+document
+.getElementById("sidebar")
+.classList
+.toggle("show");
+
+}
+);
+
+
+/* AUTHENTIFICATION */
+
+async function ensureAuthenticated() {
+
+const authResult =
+await requireSupabaseAuth();
+
+if (
+!authResult ||
+!(
+authResult.success === true ||
+authResult.authorized === true
+) ||
+!authResult?.user
+) {
+
+window.location.replace(
+"login.html"
+);
+
+return false;
+
+}
+
+currentUser =
+authResult.user;
+
+return true;
+
+}
+
+
+/* PROFIL */
+
+async function loadProfile() {
+
+const result =
+await getSupabaseProfile(
+currentUser.id
+);
+
+if (!result?.success) {
+
+throw new Error(
+result?.message ||
+"Impossible de charger votre profil."
+);
+
+}
+
+currentProfile =
+result.profile ||
+result.data;
+
+const name =
+currentProfile?.full_name ||
+currentUser?.email ||
+"Utilisateur";
+
+document.getElementById("sidebarName").textContent =
+name;
+
+document.getElementById("sidebarEmail").textContent =
+currentUser?.email || "";
+
+document.getElementById("welcomeText").textContent =
+"Bienvenue, " + name;
+
+document.getElementById("heroName").textContent =
+"Bienvenue, " + name;
+
+document.getElementById("balanceValue").textContent =
+formatMoney(currentProfile?.balance);
+
+document.getElementById("totalDepositedValue").textContent =
+formatMoney(currentProfile?.total_deposited);
+
+document.getElementById("totalInvestedValue").textContent =
+formatMoney(currentProfile?.total_invested);
+
+document.getElementById("referralBonusValue").textContent =
+formatMoney(currentProfile?.total_referral_bonus);
+
+document.getElementById("referralTotalCard").textContent =
+formatMoney(currentProfile?.total_referral_bonus);
+
+document.getElementById("profileName").value =
+currentProfile?.full_name || "";
+
+document.getElementById("profilePhone").value =
+currentProfile?.phone || "";
+
+document.getElementById("profileEmail").value =
+currentUser?.email || "";
+
+const referralCode =
+currentProfile?.referral_code || "";
+
+document.getElementById("referralCodeInput").value =
+referralCode;
+
+const referralLink =
+new URL(
+"register.html",
+window.location.href
+);
+
+referralLink.searchParams.set(
+"ref",
+referralCode
+);
+
+document.getElementById("referralLinkInput").value =
+referralLink.href;
+
+}
+
+
+async function loadPhoneChangeRequests() {
+
+const container =
+document.getElementById(
+"phoneChangeRequestsList"
+);
+
+if (!container) return;
+
+const result =
+await getSupabasePhoneChangeRequests();
+
+if (!result?.success) {
+
+container.innerHTML =
+`<div class="empty">${escapeHtml(
+result?.message ||
+"Impossible de charger les demandes."
+)}</div>`;
+
+return;
+}
+
+const requests =
+result.requests || [];
+
+if (!requests.length) {
+
+container.innerHTML =
+'<div class="empty">Aucune demande de changement.</div>';
+
+return;
+}
+
+const statusLabels = {
+pending: "En attente",
+approved: "Validée",
+rejected: "Refusée"
+};
+
+container.innerHTML = requests
+.map(request => {
+
+const status =
+String(request.status || "pending")
+.toLowerCase();
+
+return `
+<div class="notification-item">
+<div>
+<strong>${escapeHtml(request.old_phone || "Non renseigné")}</strong>
+→
+<strong>${escapeHtml(request.new_phone || "")}</strong>
+</div>
+<span class="status ${escapeHtml(status)}">
+${escapeHtml(statusLabels[status] || status)}
+</span>
+<small>${formatDate(request.created_at)}</small>
+${request.admin_note
+? `<p>${escapeHtml(request.admin_note)}</p>`
+: ""}
+</div>`;
+
+})
+.join("");
+}
+
+
+async function loadReferralRewards() {
+
+const body =
+document.getElementById(
+"referralRewardsTableBody"
+);
+
+if (!body) return;
+
+const result =
+await getSupabaseReferralRewards();
+
+if (!result?.success) {
+
+body.innerHTML = `
+<tr>
+<td colspan="5" class="empty">
+${escapeHtml(result?.message || "Historique indisponible.")}
+</td>
+</tr>`;
+
+return;
+}
+
+const rewards = result.rewards || [];
+
+if (!rewards.length) {
+
+body.innerHTML = `
+<tr>
+<td colspan="5" class="empty">Aucun bonus reçu.</td>
+</tr>`;
+
+return;
+}
+
+body.innerHTML = rewards
+.map(item => `
+<tr>
+<td>${escapeHtml(item.referred_name || "Utilisateur")}</td>
+<td>${formatMoney(item.deposit_amount)}</td>
+<td>${escapeHtml(String(Number(item.reward_rate || 0) * 100))} %</td>
+<td>${formatMoney(item.reward_amount)}</td>
+<td>${formatDate(item.created_at)}</td>
+</tr>`)
+.join("");
+}
+
+
+/* PACKS */
+
+const fallbackImages = [
+"https://images.unsplash.com/photo-1756913452989-fa97f9a8ecf1?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1574360757149-514a449c5a05?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1724994727393-1040b798a228?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1616007579077-22bee7dd35a5?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1680355065203-43ad84bb6e69?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1677273460374-ca6308b3b18e?auto=format&fit=crop&w=900&q=80",
+"https://images.unsplash.com/photo-1658298775754-5839ffd434cc?auto=format&fit=crop&w=900&q=80"
+];
+
+
+async function loadPacks() {
+
+const result =
+await getSupabaseInvestmentPacks();
+
+currentPacks =
+result?.packs ||
+result?.data ||
+[];
+
+const grid =
+document.getElementById(
+"packsGrid"
+);
+
+if (!currentPacks.length) {
+
+grid.innerHTML =
+'<div class="empty">Aucun pack disponible.</div>';
+
+return;
+}
+
+grid.innerHTML =
+currentPacks
+.map(
+(pack, index) => {
+
+const image =
+pack.image_url ||
+fallbackImages[index % fallbackImages.length];
+
+return `
+<article class="pack">
+
+<div class="pack-image">
+
+<img
+src="${escapeHtml(image)}"
+alt="${escapeHtml(pack.name)}"
+loading="lazy"
+>
+
+<div class="pack-badge">
+${Number(pack.duration_days || 100)} jours
+</div>
+
+</div>
+
+<div class="pack-body">
+
+<h4>${escapeHtml(pack.name)}</h4>
+
+<div class="pack-amount">
+${formatMoney(pack.amount)}
+</div>
+
+<div class="pack-details">
+
+<div class="pack-detail">
+<span>Gain journalier prévu</span>
+<strong>${formatMoney(pack.daily_income)}</strong>
+</div>
+
+<div class="pack-detail">
+<span>Durée</span>
+<strong>${Number(pack.duration_days || 0)} jours</strong>
+</div>
+
+<div class="pack-detail">
+<span>Total prévu</span>
+<strong>${formatMoney(pack.total_income)}</strong>
+</div>
+
+</div>
+
+<button
+class="invest-btn"
+type="button"
+data-invest-pack="${escapeHtml(pack.id)}"
+>
+Investir
+</button>
+
+</div>
+</article>
+`;
+
+}
+)
+.join("");
+
+grid
+.querySelectorAll("[data-invest-pack]")
+.forEach(
+button => {
+
+button.addEventListener(
+"click",
+() => {
+
+selectedPack =
+currentPacks.find(
+pack =>
+String(pack.id) ===
+String(button.dataset.investPack)
+);
+
+if (!selectedPack) {
+
+showToast(
+"Pack introuvable.",
+"error"
+);
+
+return;
+}
+
+document.getElementById(
+"investmentConfirmationText"
+).innerHTML = `
+Vous allez investir
+<strong>${formatMoney(selectedPack.amount)}</strong>
+dans
+<strong>${escapeHtml(selectedPack.name)}</strong>.
+<br><br>
+Le montant sera débité de votre solde
+après confirmation côté Supabase.
+`;
+
+openModal(
+"investmentModal"
+);
+
+}
+);
+
+}
+);
+
+}
+
+
+/* INVESTISSEMENTS */
+
+async function loadInvestments() {
+
+const result =
+await getSupabaseInvestments();
+
+const investments =
+result?.investments || [];
+
+const body =
+document.getElementById(
+"investmentsTableBody"
+);
+
+if (!investments.length) {
+
+body.innerHTML = `
+<tr>
+<td colspan="6" class="empty">
+Aucun investissement enregistré.
+</td>
+</tr>
+`;
+
+return;
+}
+
+body.innerHTML =
+investments
+.map(
+item => `
+<tr>
+
+<td>
+${escapeHtml(item.pack_name || item.pack_id)}
+</td>
+
+<td>
+${formatMoney(item.amount)}
+</td>
+
+<td>
+${formatMoney(item.daily_income)}
+</td>
+
+<td>
+${Number(item.credited_days || 0)}
+/
+${Number(item.duration_days || 0)}
+</td>
+
+<td>
+${formatMoney(item.total_credited)}
+</td>
+
+<td>
+<span class="status ${escapeHtml(item.status)}">
+${escapeHtml(item.status)}
+</span>
+</td>
+
+</tr>
+`
+)
+.join("");
+
+}
+
+
+/* HISTORIQUE */
+
+async function loadHistory() {
+
+const [
+depositResult,
+withdrawalResult
+] =
+await Promise.all([
+getSupabaseDeposits(),
+getSupabaseWithdrawals()
+]);
+
+const totalElement = document.getElementById("totalWithdrawnValue");
+if (withdrawalResult?.success) {
+const total = (withdrawalResult.withdrawals || [])
+.filter(item => ["pending", "approved"].includes(item.status))
+.reduce((sum, item) => sum + Number(item.gross_amount || 0), 0);
+totalElement.textContent = formatMoney(total);
+} else {
+totalElement.textContent = "Indisponible";
+showToast("Impossible de charger le total des retraits. Actualisez la page.", "error");
+}
+
+const rows = [];
+
+for (
+const deposit of
+depositResult?.deposits || []
+) {
+
+rows.push({
+type: "Dépôt",
+gross: deposit.gross_amount,
+fee: deposit.fee_amount,
+net: deposit.net_amount,
+status: deposit.status,
+date: deposit.created_at
+});
+
+}
+
+for (
+const withdrawal of
+withdrawalResult?.withdrawals || []
+) {
+
+rows.push({
+type: "Retrait",
+gross: withdrawal.gross_amount,
+fee: withdrawal.fee_amount,
+net: withdrawal.net_amount,
+status: withdrawal.status,
+date: withdrawal.created_at
+});
+
+}
+
+rows.sort(
+(a, b) =>
+new Date(b.date) -
+new Date(a.date)
+);
+
+const body =
+document.getElementById(
+"historyTableBody"
+);
+
+if (!rows.length) {
+
+body.innerHTML = `
+<tr>
+<td colspan="6" class="empty">
+Aucune opération enregistrée.
+</td>
+</tr>
+`;
+
+return;
+}
+
+body.innerHTML =
+rows
+.map(
+row => `
+<tr>
+
+<td>${escapeHtml(row.type)}</td>
+
+<td>${formatMoney(row.gross)}</td>
+
+<td>${formatMoney(row.fee)}</td>
+
+<td>${formatMoney(row.net)}</td>
+
+<td>
+<span class="status ${escapeHtml(row.status)}">
+${escapeHtml(row.status)}
+</span>
+</td>
+
+<td>${formatDate(row.date)}</td>
+
+</tr>
+`
+)
+.join("");
+
+}
+
+
+/* SUPPORT */
+
+function supportFileSize(bytes) {
+const value = Number(bytes || 0);
+if (value < 1024) return `${value} o`;
+if (value < 1024 * 1024) return `${Math.round(value / 1024)} Ko`;
+return `${(value / (1024 * 1024)).toFixed(1)} Mo`;
+}
+
+function supportAttachmentsHtml(attachments) {
+const files = Array.isArray(attachments) ? attachments : [];
+if (!files.length) return "";
+return `<div class="support-attachments">${files.map(file => `
+<button type="button" class="support-attachment-btn" data-support-path="${escapeHtml(file.path)}" title="Ouvrir ${escapeHtml(file.name)}">
+<i class="fa-solid fa-paperclip"></i>
+<span>${escapeHtml(file.name)}</span>
+<small>${supportFileSize(file.size)}</small>
+</button>`).join("")}</div>`;
+}
+
+async function openSupportAttachment(button) {
+const path = button?.dataset?.supportPath;
+if (!path) return;
+const initial = button.innerHTML;
+let previewWindow = null;
+try {
+previewWindow = window.open("about:blank", "_blank");
+if (previewWindow) previewWindow.opener = null;
+} catch (_) {}
+button.disabled = true;
+button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Ouverture...';
+try {
+const result = await getSupabaseSupportAttachmentUrl(path);
+if (!result?.success || !result.url) throw new Error(result?.message || "Pièce jointe inaccessible.");
+if (previewWindow) {
+previewWindow.location.href = result.url;
+} else {
+window.location.href = result.url;
+}
+} catch (error) {
+try { if (previewWindow) previewWindow.close(); } catch (_) {}
+showToast(error?.message || "Impossible d'ouvrir la pièce jointe.", "error");
+} finally {
+button.disabled = false;
+button.innerHTML = initial;
+}
+}
+
+async function loadSupportTickets() {
+const result = await getSupabaseSupportTickets();
+const container = document.getElementById("supportTicketsList");
+if (!result?.success) throw new Error(result?.message || "Impossible de charger vos demandes d’assistance.");
+const tickets = result.tickets || [];
+if (!tickets.length) {
+container.innerHTML = '<div class="empty">Aucune demande envoyée.</div>';
+return;
+}
+container.innerHTML = tickets.map(ticket => {
+const userContent = hyqdParseSupportContent(ticket.message);
+const adminContent = hyqdParseSupportContent(ticket.admin_reply || "");
+const label = ticket.status === "open" && ticket.taken_at ? "En cours" : ({open:"Reçu",answered:"Répondu",closed:"Clôturé"}[ticket.status] || ticket.status);
+return `
+<article id="support-ticket-${escapeHtml(ticket.id)}" class="support-ticket-card" tabindex="-1">
+<div class="support-ticket-heading"><strong>${escapeHtml(ticket.subject)}</strong>
+<span class="status ${escapeHtml(ticket.status)}">${escapeHtml(label)}</span></div>
+<p class="support-ticket-date">Demande ${escapeHtml(String(ticket.id).slice(0,8))} · Créée le ${formatDate(ticket.created_at)}</p>
+${ticket.taken_at ? `<p class="support-ticket-date">Prise en charge le ${formatDate(ticket.taken_at)}</p>` : ""}
+<p class="support-ticket-text">${escapeHtml(userContent.text)}</p>
+${supportAttachmentsHtml(userContent.attachments)}
+${ticket.admin_reply ? `
+<div class="support-ticket-reply"><strong>Réponse de l’assistance</strong>
+<p class="support-ticket-date">${formatDate(ticket.replied_at)}</p>
+<p class="support-ticket-text">${escapeHtml(adminContent.text)}</p>
+${supportAttachmentsHtml(adminContent.attachments)}</div>` : `<p class="support-ticket-date">${ticket.taken_at ? "Votre demande est en cours d’examen." : "Votre demande attend une prise en charge."}</p>`}
+<button type="button" class="primary-btn" data-ticket-history="${escapeHtml(ticket.id)}">Historique des réponses</button>
+<div id="ticket-history-${escapeHtml(ticket.id)}" aria-live="polite" hidden></div>
+${ticket.status === "closed" ? '<p class="support-ticket-date">Demande clôturée. Si le problème persiste, créez une nouvelle demande en rappelant son numéro.</p>' : ""}
+</article>`;
+}).join("");
+container.querySelectorAll("[data-support-path]").forEach(button => {
+button.addEventListener("click", () => openSupportAttachment(button));
+});
+container.querySelectorAll("[data-ticket-history]").forEach(button => {
+button.addEventListener("click", () => openCustomerSupportHistory(button));
+});
+}
+
+async function openCustomerSupportHistory(button) {
+if(button.disabled)return;
+const panel=document.getElementById("ticket-history-"+button.dataset.ticketHistory);
+if(!panel.hidden){panel.hidden=true;button.textContent="Historique des réponses";return;}
+panel.hidden=false;panel.textContent="Chargement…";button.disabled=true;
+try {
+const result=await getSupabaseSupportTicketEvents(button.dataset.ticketHistory);
+if(!result?.success)throw new Error(result?.message||"Historique indisponible.");
+panel.innerHTML=result.events.map(event=>{
+const content=hyqdParseSupportContent(event.message||"");
+const label={taken:"Prise en charge",replied:"Réponse",closed:"Clôture",snapshot:"Réponse antérieure conservée"}[event.event_type]||event.event_type;
+return `<article class="support-ticket-reply"><strong>${escapeHtml(label)}</strong><p class="support-ticket-date">${formatDate(event.created_at)}</p><p class="support-ticket-text">${escapeHtml(content.text)}</p>${supportAttachmentsHtml(content.attachments)}</article>`;
+}).join("")||"Aucune intervention enregistrée.";
+panel.querySelectorAll("[data-support-path]").forEach(fileButton=>fileButton.addEventListener("click",()=>openSupportAttachment(fileButton)));
+button.textContent="Masquer l’historique";
+}catch(error){panel.textContent=error.message||"Historique indisponible.";button.textContent="Fermer l’historique";}
+finally{button.disabled=false;}
+}
+
+let supportRefreshRunning = false;
+async function refreshSupportAndNotifications(manual = false) {
+if (!currentUser || supportRefreshRunning || document.hidden) return;
+supportRefreshRunning = true;
+try {
+const historyOpen=Array.from(document.querySelectorAll('[id^="ticket-history-"]')).some(panel=>!panel.hidden);
+await Promise.all([historyOpen && !manual ? Promise.resolve() : loadSupportTickets(), loadNotifications()]);
+if (manual) showToast("Demandes et notifications actualisées.", "success");
+} catch (error) {
+if (manual) showToast(error?.message || "Actualisation impossible.", "error");
+} finally { supportRefreshRunning = false; }
+}
+document.getElementById("refreshSupportButton").addEventListener("click", () => refreshSupportAndNotifications(true));
+setInterval(() => refreshSupportAndNotifications(), 30000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) refreshSupportAndNotifications(); });
+
+/* NOTIFICATIONS */
+
+async function loadNotifications() {
+
+const result =
+await getSupabaseNotifications();
+
+const notifications =
+result?.notifications || [];
+
+const unread =
+notifications.filter(
+item => !item.is_read
+).length;
+
+const badge =
+document.getElementById(
+"notificationBadge"
+);
+
+badge.textContent =
+unread;
+
+badge.classList.toggle(
+"show",
+unread > 0
+);
+
+const list =
+document.getElementById(
+"notificationList"
+);
+
+if (!notifications.length) {
+
+list.innerHTML =
+'<div class="empty">Aucune notification.</div>';
+
+return;
+}
+
+list.innerHTML =
+notifications
+.map(
+item => `
+<div
+class="notification-item ${item.is_read ? "" : "unread"}"
+data-notification-id="${escapeHtml(item.id)}"
+role="button" tabindex="0"
+>
+
+<strong>
+${escapeHtml(item.title)}
+</strong>
+
+<p>
+${escapeHtml(item.message)}
+</p>
+
+<p>
+${formatDate(item.created_at)}
+</p>
+
+</div>
+`
+)
+.join("");
+
+list
+.querySelectorAll("[data-notification-id]")
+.forEach(
+item => {
+
+item.addEventListener("keydown", event => {
+if (event.key === "Enter" || event.key === " ") { event.preventDefault(); item.click(); }
+});
+
+item.addEventListener(
+"click",
+async event => {
+
+event.stopPropagation();
+
+const notification = notifications.find(entry => String(entry.id) === item.dataset.notificationId);
+if (item.classList.contains("unread")) {
+const result = await markSupabaseNotificationRead(item.dataset.notificationId);
+if (result?.success) await loadNotifications();
+}
+if (notification?.related_type === "support_ticket") {
+try {
+await loadSupportTickets();
+closeNotificationPanel();
+const target = document.getElementById("support-ticket-" + notification.related_id);
+(target || document.getElementById("supportSection"))?.scrollIntoView({behavior:"smooth",block:"start"});
+target?.focus({preventScroll:true});
+} catch (error) { showToast(error.message || "Demande indisponible.", "error"); }
+}
+
+}
+);
+
+}
+);
+
+}
+
+
+/* TICKER */
+
+const depositTickerState = { rows: [], index: 0, offset: 0, snapshot: null, busy: null, paused: false, ready: false, retry: null };
+const reducedTickerMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+function runTickerLine(viewportId, text) {
+const viewport = document.getElementById(viewportId);
+const line = document.createElement("span");
+line.className = "ticker-line";
+line.textContent = text;
+viewport.replaceChildren(line);
+requestAnimationFrame(() => {
+if (!line.isConnected) return;
+const width = viewport.clientWidth;
+line.style.setProperty("--ticker-start", width + "px");
+line.style.setProperty("--ticker-end", -line.scrollWidth + "px");
+line.style.setProperty("--ticker-duration", Math.max(10, (width + line.scrollWidth) / 45) + "s");
+line.classList.add("ticker-line-running");
+});
+}
+
+function syncTickerPause() {
+const stop = depositTickerState.paused || document.hidden;
+document.getElementById("dashboardTickers").classList.toggle("ticker-paused", stop);
+const button = document.getElementById("pauseTickers");
+button.textContent = depositTickerState.paused ? "Reprendre" : "Pause";
+button.setAttribute("aria-pressed", String(depositTickerState.paused));
+}
+
+async function nextDepositTicker() {
+if (depositTickerState.busy) return depositTickerState.busy;
+const button = document.getElementById("nextDepositTicker");
+button.disabled = true;
+clearTimeout(depositTickerState.retry);
+depositTickerState.busy = (async () => {
+try {
+if (depositTickerState.index >= depositTickerState.rows.length) {
+let {data,error} = await getHousingSupabaseClient().rpc("get_approved_deposit_ticker_page",{
+p_offset:depositTickerState.offset,p_limit:20,p_snapshot:depositTickerState.snapshot});
+if (error) throw error;
+if (!data?.length && depositTickerState.offset > 0) {
+// Un tour est terminé : repartir des dépôts les plus récents.
+const result = await getHousingSupabaseClient().rpc("get_approved_deposit_ticker_page",{p_offset:0,p_limit:20,p_snapshot:null});
+if(result.error)throw result.error;
+data=result.data;
+depositTickerState.offset=0;
+depositTickerState.snapshot=null;
+}
+if (!data?.length) {
+document.getElementById("depositTicker").textContent="Aucun dépôt validé à afficher.";
+depositTickerState.ready=false;
+depositTickerState.retry=setTimeout(()=>{if(!document.hidden)loadTicker();},60000);
+return;
+}
+depositTickerState.rows=data;
+depositTickerState.index=0;
+depositTickerState.offset+=data.length;
+depositTickerState.snapshot=data[0].snapshot_at;
+}
+const item=depositTickerState.rows[depositTickerState.index++];
+// N’afficher un numéro que si la réponse serveur contient effectivement un masque.
+const masked=String(item.masked_phone||"");
+const phone=/^\*{2,}[0-9]*$/.test(masked)?masked:"****";
+runTickerLine("depositTicker",`${phone} a effectué un dépôt de ${formatMoney(item.amount)}.`);
+depositTickerState.ready=true;
+} catch(error) {
+depositTickerState.ready=false;
+document.getElementById("depositTicker").textContent="Dépôts indisponibles. Appuyez sur « Suivant » pour réessayer.";
+} finally {button.disabled=false;}
+})();
+try {await depositTickerState.busy;} finally {depositTickerState.busy=null;}
+}
+
+async function loadTicker() {
+if(depositTickerState.ready)return;
+return nextDepositTicker();
+}
+
+document.getElementById("depositTicker").addEventListener("animationend",()=>{
+if(!depositTickerState.paused && !document.hidden && !reducedTickerMotion.matches)nextDepositTicker();
+});
+document.getElementById("nextDepositTicker").addEventListener("click",()=>nextDepositTicker());
+document.getElementById("pauseTickers").addEventListener("click",()=>{
+depositTickerState.paused=!depositTickerState.paused;syncTickerPause();
+});
+document.addEventListener("visibilitychange",()=>{
+syncTickerPause();if(!document.hidden&&!depositTickerState.ready)loadTicker();
+});
+runTickerLine("withdrawalNoticeTicker","Désormais, les retraits s’effectuent une seule fois toutes les 24 h, de 8 h à 17 h.");
+syncTickerPause();
+
+
+/* ACTUALISATION */
+
+async function refreshDashboard() {
+
+await Promise.all([
+loadProfile(),
+loadPhoneChangeRequests(),
+loadReferralRewards(),
+loadInvestments(),
+loadHistory(),
+loadSupportTickets(),
+loadNotifications(),
+loadTicker()
+]);
+
+}
+
+
+/* DÉPÔT */
+const waveAmountInput = document.getElementById("depositAmount");
+const wavePaymentLink = document.getElementById("openWavePayment");
+function updateDepositPreview() {
+const input = document.getElementById("depositAmount");
+const amount = Number(input.value);
+const valid = input.value !== "" && input.validity.valid && Number.isSafeInteger(amount) && amount >= 500 && amount <= 1000000000;
+// Même arrondi au FCFA que round(p_amount * 0.01, 0) côté Supabase.
+const fee = 0;
+document.getElementById("depositGrossPreview").textContent = valid ? formatMoney(amount) : "—";
+document.getElementById("depositFeePreview").textContent = valid ? formatMoney(fee) : "—";
+document.getElementById("depositNetPreview").textContent = valid ? formatMoney(amount) : "—";
+document.getElementById("depositPreviewHint").textContent = valid
+? `Payez ${formatMoney(amount)} sur Wave. La totalité sera créditée après validation, sans frais de dépôt.`
+: "Saisissez un montant entier entre 500 et 1 000 000 000 FCFA.";
+}
+
+function updateWaveAmountHint() {
+  updateDepositPreview();
+  const amount = Number(waveAmountInput.value);
+  document.getElementById("waveAmountHint").textContent =
+    waveAmountInput.value && waveAmountInput.validity.valid && Number.isFinite(amount)
+    ? `Montant à saisir dans Wave : ${new Intl.NumberFormat("fr-FR").format(amount)} FCFA.`
+    : "Indiquez un montant entier à partir de 500 FCFA.";
+}
+waveAmountInput.addEventListener("input", updateWaveAmountHint);
+document.getElementById("depositForm").addEventListener("reset", () => setTimeout(updateWaveAmountHint, 0));
+wavePaymentLink.addEventListener("click", event => {
+  if (!waveAmountInput.reportValidity()) {
+    event.preventDefault();
+    return;
+  }
+  updateWaveAmountHint();
+  // Le lien marchand ouvre Wave ; il ne constitue pas une confirmation de paiement.
+});
+document.getElementById("openDepositButton").addEventListener("click", () => {
+  updateWaveAmountHint();
+  openModal("depositModal");
+});
+document.getElementById("depositForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const button = document.getElementById("depositSubmitButton");
+  if (button.disabled || !form.reportValidity()) return;
+  const reference = document.getElementById("depositReference").value.trim();
+  if (!reference) {
+    showToast("Saisissez le numéro de transaction de votre paiement Wave.", "error");
+    return;
+  }
+  button.disabled = true;
+  button.textContent = "Enregistrement...";
+  try {
+    const result = await requestSupabaseDeposit({
+      amount: waveAmountInput.value,
+      method: "Wave",
+      reference
+    });
+    if (!result?.success) throw new Error(result?.message || "Impossible d’enregistrer la demande.");
+    form.reset();
+    updateWaveAmountHint();
+    closeModal("depositModal");
+    showToast("Demande enregistrée. Votre dépôt attend la vérification de l’administrateur.", "success");
+    try { await refreshDashboard(); }
+    catch (refreshError) { showToast("Demande enregistrée. Actualisez l’historique pour la consulter.", "success"); }
+  } catch (error) {
+    const message = String(error?.message || "Impossible de confirmer l’enregistrement. Consultez votre historique avant de réessayer.");
+    showToast(/deposits_method_reference_unique_idx|duplicate key/i.test(message)
+      ? "Ce numéro de transaction a déjà été déclaré. Consultez votre historique ou contactez l’assistance. Ne refaites pas le paiement."
+      : message, "error");
+  } finally {
+    button.disabled = false;
+    button.textContent = "Envoyer ma demande de dépôt";
+  }
+});
+
+
+/* NUMÉROS CI / BURKINA FASO / MALI */
+const HYQD_PHONE_COUNTRIES = Object.freeze({
+"225": { label: "Côte d’Ivoire", length: 10, placeholder: "0700000000" },
+"226": { label: "Burkina Faso", length: 8, placeholder: "70123456" },
+"223": { label: "Mali", length: 8, placeholder: "70123456" }
+});
+
+function getSupportedPhoneConfig(countryCode) {
+return HYQD_PHONE_COUNTRIES[String(countryCode)] || HYQD_PHONE_COUNTRIES["225"];
+}
+
+function splitSupportedInternationalPhone(value) {
+const raw = String(value || "").replace(/[\s().-]+/g, "");
+const normalized = raw.startsWith("00") ? "+" + raw.slice(2) : raw;
+
+for (const code of ["225", "226", "223"]) {
+if (normalized.startsWith("+" + code)) {
+return {
+countryCode: code,
+local: normalized.slice(code.length + 1)
+};
+}
+}
+
+return { countryCode: "225", local: raw.replace(/\D/g, "") };
+}
+
+function buildSupportedInternationalPhone(countryCode, value) {
+const code = String(countryCode || "225");
+const config = getSupportedPhoneConfig(code);
+let raw = String(value || "").trim().replace(/[\s().-]+/g, "");
+
+if (/^\+(225|226|223)\d+$/.test(raw)) {
+const split = splitSupportedInternationalPhone(raw);
+const splitConfig = getSupportedPhoneConfig(split.countryCode);
+if (!new RegExp("^\\d{" + splitConfig.length + "}$").test(split.local)) {
+throw new Error(`Le numéro ${splitConfig.label} doit contenir ${splitConfig.length} chiffres après +${split.countryCode}.`);
+}
+return "+" + split.countryCode + split.local;
+}
+
+if (/^00(225|226|223)\d+$/.test(raw)) {
+return buildSupportedInternationalPhone(code, "+" + raw.slice(2));
+}
+
+if (/^(225|226|223)\d+$/.test(raw)) {
+return buildSupportedInternationalPhone(code, "+" + raw);
+}
+
+const local = raw.replace(/\D/g, "");
+if (!new RegExp("^\\d{" + config.length + "}$").test(local)) {
+throw new Error(`Le numéro ${config.label} doit contenir exactement ${config.length} chiffres.`);
+}
+
+return "+" + code + local;
+}
+
+function updatePhoneCountryField(countrySelectId, phoneInputId, hintId) {
+const country = document.getElementById(countrySelectId);
+const input = document.getElementById(phoneInputId);
+const hint = document.getElementById(hintId);
+if (!country || !input) return;
+
+const config = getSupportedPhoneConfig(country.value);
+input.placeholder = config.placeholder;
+input.maxLength = config.length;
+
+if (hint) {
+hint.textContent = `Entrez les ${config.length} chiffres du numéro ${config.label}, sans +${country.value}.`;
+}
+}
+
+/* RETRAIT */
+
+function updateWithdrawalPreview() {
+const input = document.getElementById("withdrawalAmount");
+const amount = Number(input.value);
+const valid = input.value !== "" && input.validity.valid && Number.isSafeInteger(amount) && amount >= 1000;
+const fee = 0;
+document.getElementById("withdrawalGrossPreview").textContent = valid ? formatMoney(amount) : "—";
+document.getElementById("withdrawalFeePreview").textContent = valid ? formatMoney(fee) : "—";
+document.getElementById("withdrawalNetPreview").textContent = valid ? formatMoney(amount) : "—";
+document.getElementById("withdrawalPreviewHint").textContent = valid
+? "Le montant demandé sera réservé sur votre solde. Le versement est soumis à validation."
+: "Saisissez un montant entier d’au moins 1 000 FCFA.";
+}
+
+document.getElementById("withdrawalAmount").addEventListener("input", updateWithdrawalPreview);
+document.getElementById("withdrawalForm").addEventListener("reset", () => setTimeout(updateWithdrawalPreview, 0));
+
+document
+.getElementById("openWithdrawalButton")
+.addEventListener(
+"click",
+() => {
+
+const savedPhone =
+splitSupportedInternationalPhone(
+currentProfile?.phone || ""
+);
+
+document.getElementById(
+"withdrawalPhoneCountry"
+).value =
+savedPhone.countryCode;
+
+document.getElementById(
+"withdrawalPhone"
+).value =
+savedPhone.local;
+
+updatePhoneCountryField(
+"withdrawalPhoneCountry",
+"withdrawalPhone",
+"withdrawalPhoneHint"
+);
+
+updateWithdrawalPreview();
+
+openModal(
+"withdrawalModal"
+);
+
+}
+);
+
+
+document
+.getElementById("withdrawalForm")
+.addEventListener(
+"submit",
+async event => {
+
+event.preventDefault();
+
+const button =
+document.getElementById(
+"withdrawalSubmitButton"
+);
+
+button.disabled =
+true;
+
+button.textContent =
+"Enregistrement...";
+
+try {
+
+const result =
+await requestSupabaseWithdrawal({
+
+amount:
+document.getElementById(
+"withdrawalAmount"
+).value,
+
+method:
+document.getElementById(
+"withdrawalMethod"
+).value,
+
+destinationPhone:
+buildSupportedInternationalPhone(
+document.getElementById(
+"withdrawalPhoneCountry"
+).value,
+document.getElementById(
+"withdrawalPhone"
+).value
+)
+
+});
+
+if (!result?.success) {
+
+throw new Error(
+result?.message ||
+"Impossible d'enregistrer le retrait."
+);
+
+}
+
+showToast(
+result.message,
+"success"
+);
+
+document
+.getElementById("withdrawalForm")
+.reset();
+
+closeModal(
+"withdrawalModal"
+);
+
+await refreshDashboard();
+
+} catch (error) {
+
+showToast(
+error?.message ||
+"Erreur lors du retrait.",
+"error"
+);
+
+} finally {
+
+button.disabled =
+false;
+
+button.textContent =
+"Envoyer la demande";
+
+}
+
+}
+);
+
+
+/* INVESTIR */
+
+document
+.getElementById("confirmInvestmentButton")
+.addEventListener(
+"click",
+async function () {
+
+if (!selectedPack) {
+return;
+}
+
+this.disabled =
+true;
+
+this.textContent =
+"Activation...";
+
+try {
+
+const result =
+await investSupabasePack(
+selectedPack.pack_id ||
+selectedPack.id
+);
+
+if (!result?.success) {
+
+throw new Error(
+result?.message ||
+"Impossible d'effectuer l'investissement."
+);
+
+}
+
+showToast(
+result.message,
+"success"
+);
+
+closeModal(
+"investmentModal"
+);
+
+selectedPack =
+null;
+
+await refreshDashboard();
+
+} catch (error) {
+
+showToast(
+error?.message ||
+"Erreur pendant l'investissement.",
+"error"
+);
+
+} finally {
+
+this.disabled =
+false;
+
+this.textContent =
+"Confirmer l'investissement";
+
+}
+
+}
+);
+
+
+/* ASSISTANCE */
+
+const supportAttachmentsInput = document.getElementById("supportAttachments");
+const supportAttachmentsPreview = document.getElementById("supportAttachmentsPreview");
+
+function refreshSupportAttachmentsPreview() {
+const files = Array.from(supportAttachmentsInput.files || []);
+if (files.length > HYQD_SUPPORT_MAX_FILES) {
+showToast(`Maximum ${HYQD_SUPPORT_MAX_FILES} fichiers.`, "error");
+supportAttachmentsInput.value = "";
+supportAttachmentsPreview.innerHTML = "";
+return;
+}
+supportAttachmentsPreview.innerHTML = files.map(file => `
+<div class="support-file-item">
+<i class="fa-solid fa-paperclip"></i>
+<span>${escapeHtml(file.name)} — ${supportFileSize(file.size)}</span>
+</div>`).join("");
+}
+
+supportAttachmentsInput.addEventListener("change", refreshSupportAttachmentsPreview);
+
+document.getElementById("supportForm").addEventListener("submit", async event => {
+event.preventDefault();
+const button = document.getElementById("supportSubmitButton");
+button.disabled = true;
+button.textContent = "Envoi...";
+try {
+const result = await createSupabaseSupportTicket({
+subject: document.getElementById("supportSubject").value,
+message: document.getElementById("supportMessage").value,
+files: supportAttachmentsInput.files
+});
+if (!result?.success) throw new Error(result?.message || "Impossible d'envoyer votre demande.");
+showToast(result.message, "success");
+document.getElementById("supportForm").reset();
+supportAttachmentsPreview.innerHTML = "";
+await loadSupportTickets();
+} catch (error) {
+showToast(error?.message || "Erreur assistance.", "error");
+} finally {
+button.disabled = false;
+button.textContent = "Envoyer";
+}
+});
+
+
+/* PROFIL */
+
+document
+.getElementById("profileForm")
+.addEventListener(
+"submit",
+async event => {
+
+event.preventDefault();
+
+const button =
+document.getElementById(
+"profileSubmitButton"
+);
+
+button.disabled =
+true;
+
+button.textContent =
+"Enregistrement...";
+
+try {
+
+const result =
+await updateSupabaseProfile({
+
+fullName:
+document.getElementById(
+"profileName"
+).value,
+
+phone:
+document.getElementById(
+"profilePhone"
+).value
+
+});
+
+if (!result?.success) {
+
+throw new Error(
+result?.message ||
+"Impossible de modifier le profil."
+);
+
+}
+
+showToast(
+result.message,
+"success"
+);
+
+await loadProfile();
+
+} catch (error) {
+
+showToast(
+error?.message ||
+"Erreur lors de la modification du profil.",
+"error"
+);
+
+} finally {
+
+button.disabled =
+false;
+
+button.textContent =
+"Enregistrer les modifications";
+
+}
+
+}
+);
+
+
+document.getElementById("withdrawalPhoneCountry").addEventListener("change", () => {
+document.getElementById("withdrawalPhone").value = "";
+updatePhoneCountryField("withdrawalPhoneCountry", "withdrawalPhone", "withdrawalPhoneHint");
+});
+
+document.getElementById("newProfilePhoneCountry").addEventListener("change", () => {
+document.getElementById("newProfilePhone").value = "";
+updatePhoneCountryField("newProfilePhoneCountry", "newProfilePhone", "newProfilePhoneHint");
+});
+
+updatePhoneCountryField("withdrawalPhoneCountry", "withdrawalPhone", "withdrawalPhoneHint");
+updatePhoneCountryField("newProfilePhoneCountry", "newProfilePhone", "newProfilePhoneHint");
+
+
+/* DEMANDE DE CHANGEMENT DE NUMÉRO */
+
+document
+.getElementById("phoneChangeForm")
+.addEventListener(
+"submit",
+async event => {
+
+event.preventDefault();
+
+const button =
+document.getElementById(
+"phoneChangeSubmitButton"
+);
+
+button.disabled = true;
+button.textContent = "Envoi...";
+
+try {
+
+const newPhone =
+buildSupportedInternationalPhone(
+document.getElementById(
+"newProfilePhoneCountry"
+).value,
+document.getElementById(
+"newProfilePhone"
+).value
+);
+
+const result =
+await requestSupabasePhoneChange(
+newPhone
+);
+
+if (!result?.success) {
+throw new Error(
+result?.message ||
+"Demande de changement impossible."
+);
+}
+
+showToast(
+result.message,
+"success"
+);
+
+document
+.getElementById("phoneChangeForm")
+.reset();
+
+await loadPhoneChangeRequests();
+
+} catch (error) {
+
+showToast(
+error?.message ||
+"Demande de changement impossible.",
+"error"
+);
+
+} finally {
+
+button.disabled = false;
+button.textContent = "Envoyer la demande";
+
+}
+}
+);
+
+
+/* COPIE */
+
+async function copyText(text) {
+
+try {
+
+await navigator.clipboard.writeText(
+text
+);
+
+showToast(
+"Copié.",
+"success"
+);
+
+} catch {
+
+showToast(
+"Copie impossible sur cet appareil.",
+"error"
+);
+
+}
+
+}
+
+
+document
+.getElementById("copyReferralCode")
+.addEventListener(
+"click",
+() => {
+
+copyText(
+document.getElementById(
+"referralCodeInput"
+).value
+);
+
+}
+);
+
+
+document
+.getElementById("copyReferralLink")
+.addEventListener(
+"click",
+() => {
+
+copyText(
+document.getElementById(
+"referralLinkInput"
+).value
+);
+
+}
+);
+
+
+/* PANNEAU DES NOTIFICATIONS */
+
+const notificationButton =
+document.getElementById(
+"notificationButton"
+);
+
+const notificationPanel =
+document.getElementById(
+"notificationPanel"
+);
+
+const markAllNotificationsButton =
+document.getElementById(
+"markAllNotificationsButton"
+);
+
+
+function openNotificationPanel() {
+
+notificationPanel
+.classList
+.add("show");
+
+notificationPanel.style.display =
+"block";
+
+notificationPanel.style.visibility =
+"visible";
+
+notificationPanel.style.opacity =
+"1";
+
+notificationPanel.style.pointerEvents =
+"auto";
+
+notificationPanel.style.zIndex =
+"99999";
+
+notificationPanel.setAttribute(
+"aria-hidden",
+"false"
+);
+
+}
+
+
+function closeNotificationPanel() {
+
+notificationPanel
+.classList
+.remove("show");
+
+notificationPanel.style.display =
+"none";
+
+notificationPanel.setAttribute(
+"aria-hidden",
+"true"
+);
+
+}
+
+
+notificationButton.addEventListener(
+"click",
+function (event) {
+
+event.preventDefault();
+event.stopPropagation();
+
+const isOpen =
+notificationPanel
+.classList
+.contains("show");
+
+if (isOpen) {
+
+closeNotificationPanel();
+
+} else {
+
+openNotificationPanel();
+
+}
+
+}
+);
+
+
+notificationPanel.addEventListener(
+"click",
+function (event) {
+
+event.stopPropagation();
+
+}
+);
+
+
+document.addEventListener(
+"click",
+function (event) {
+
+if (
+notificationPanel.classList.contains("show") &&
+!notificationPanel.contains(event.target) &&
+!notificationButton.contains(event.target)
+) {
+
+closeNotificationPanel();
+
+}
+
+}
+);
+
+
+markAllNotificationsButton.addEventListener(
+"click",
+async function (event) {
+
+event.preventDefault();
+event.stopPropagation();
+
+const oldText =
+this.textContent;
+
+this.disabled =
+true;
+
+this.textContent =
+"Lecture...";
+
+try {
+
+const result =
+await markAllSupabaseNotificationsRead();
+
+if (!result?.success) {
+
+throw new Error(
+result?.message ||
+"Impossible de mettre à jour les notifications."
+);
+
+}
+
+await loadNotifications();
+
+openNotificationPanel();
+
+showToast(
+"Toutes les notifications ont été marquées comme lues.",
+"success"
+);
+
+} catch (error) {
+
+showToast(
+error?.message ||
+"Erreur lors de la lecture des notifications.",
+"error"
+);
+
+} finally {
+
+this.disabled =
+false;
+
+this.textContent =
+oldText;
+
+}
+
+}
+);
+
+
+/* DÉCONNEXION */
+
+async function performLogout() {
+
+try {
+
+await logoutSupabaseUser();
+
+} finally {
+
+window.location.replace(
+"login.html?logout=1"
+);
+
+}
+
+}
+
+
+document
+.getElementById("logoutButton")
+.addEventListener(
+"click",
+performLogout
+);
+
+
+document
+.getElementById("logoutSideButton")
+.addEventListener(
+"click",
+performLogout
+);
+
+
+
+/* DÉMARRAGE */
+
+async function startDashboard() {
+
+const loadingScreen =
+document.getElementById(
+"loadingScreen"
+);
+
+try {
+
+// Le délai protège aussi la vérification de session Supabase.
+const withTimeout = (promise, ms = 12000) =>
+Promise.race([
+promise,
+new Promise((_, reject) =>
+setTimeout(() => reject(new Error("Délai de chargement dépassé. Vérifiez votre connexion puis actualisez la page.")), ms)
+)
+]);
+
+const authenticated =
+await withTimeout(ensureAuthenticated());
+
+if (!authenticated) {
+return;
+}
+
+await withTimeout(loadPacks());
+await withTimeout(refreshDashboard());
+
+} catch (error) {
+
+console.error(
+"Dashboard:",
+error
+);
+
+showToast(
+error?.message ||
+"Impossible de charger complètement votre espace.",
+"error"
+);
+
+} finally {
+
+loadingScreen.style.display =
+"none";
+
+}
+
+}
+
+
+document.addEventListener(
+"DOMContentLoaded",
+startDashboard
+);
+
+</script>
+
+</body>
+</html>    
